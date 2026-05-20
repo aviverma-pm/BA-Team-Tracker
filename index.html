@@ -341,6 +341,21 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle}
   <div class="ssec"><div class="ssect">Team Members</div><div id="teamRows"></div><button class="addb" id="btnAddTeam">+ Add Member</button></div>
   <div class="ssec"><div class="ssect">Workflow Stages</div><div id="stageRows"></div><button class="addb" id="btnAddStg">+ Add Stage</button></div>
   <div class="ssec"><div class="ssect">Task Types</div><div id="typeRows"></div><button class="addb" id="btnAddType">+ Add Type</button></div>
+
+  <div class="ssec">
+    <div class="ssect">&#128276; Notifications</div>
+    <div class="fg"><label class="fl">Manager Email (gets all alerts)</label><input class="fi" id="cfgMgrEmail" placeholder="yourname@hotelogix.com"></div>
+    <div class="fg"><label class="fl">Google Chat Webhook URL</label><input class="fi" id="cfgWebhook" placeholder="https://chat.googleapis.com/v1/spaces/..."></div>
+    <div style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.15);border-radius:8px;padding:10px 12px;margin-top:4px">
+      <div style="font-size:11px;color:var(--blue);font-weight:600;margin-bottom:6px">&#9432; How to get Google Chat Webhook</div>
+      <div style="font-size:11px;color:var(--tx2);line-height:1.6">1. Open your Google Chat space<br>2. Click space name at top &#8594; <b>Apps &amp; Integrations</b><br>3. Click <b>Webhooks</b> &#8594; <b>Add Webhook</b><br>4. Name it "Superset Ops" &#8594; copy the URL &#8594; paste above</div>
+    </div>
+    <div style="margin-top:10px">
+      <div style="font-size:11px;color:var(--tx3);font-weight:600;text-transform:uppercase;letter-spacing:0.7px;margin-bottom:8px">Team Member Emails</div>
+      <div id="teamEmailRows"></div>
+    </div>
+  </div>
+
   <div style="display:flex;gap:9px;margin-top:8px">
     <button class="btn btn-p" id="btnSaveCfg" style="flex:1;justify-content:center">Save & Apply</button>
     <button class="btn btn-g" id="btnCancelCfg" style="justify-content:center">Cancel</button>
@@ -378,6 +393,7 @@ const D = {
 let cfg=loadCfg(), tickets=[], sprints=[], activity=[], fMode='all', fAv='', selStg='';
 
 function loadCfg(){try{const s=localStorage.getItem('hlx3');if(s)return Object.assign({},D,JSON.parse(s));}catch(e){}return Object.assign({},D);}
+function fmtIST(d){if(!d)return '';try{const dt=d instanceof Date?d:new Date(d);if(isNaN(dt))return d;return dt.toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});}catch(e){return d;}}
 function saveCfg(){localStorage.setItem('hlx3',JSON.stringify(cfg));}
 function loadSpr(){try{const s=localStorage.getItem('hlxsp');if(s)return JSON.parse(s);}catch(e){}return [];}
 function saveSpr(){localStorage.setItem('hlxsp',JSON.stringify(sprints));}
@@ -700,7 +716,22 @@ function openSettings(){
   document.getElementById('cfgurl').value=cfg.apiUrl||'';
   document.getElementById('cfgme').innerHTML=['— No filter —',...cfg.team.map(m=>m.name)].map(n=>'<option>'+n+'</option>').join('');
   document.getElementById('cfgme').value=cfg.myName||'— No filter —';
-  renderTeamR();renderStgR();renderTypeR();openOv('ovCfg');
+  document.getElementById('cfgMgrEmail').value=cfg.managerEmail||'';
+  document.getElementById('cfgWebhook').value=cfg.chatWebhook||'';
+  renderTeamR();renderStgR();renderTypeR();renderTeamEmailR();openOv('ovCfg');
+}
+
+function renderTeamEmailR(){
+  document.getElementById('teamEmailRows').innerHTML=cfg.team.map((m,i)=>
+    '<div class="srow" style="margin-bottom:8px">'+
+    '<span style="font-size:12px;font-weight:600;color:var(--tx2);width:80px;flex-shrink:0">'+m.name+'</span>'+
+    '<input class="fi" value="'+(cfg.teamEmails&&cfg.teamEmails[m.name]||'')+'" placeholder="'+m.name.toLowerCase()+'@hotelogix.com" data-emailname="'+m.name+'" style="flex:1">'+
+    '</div>'
+  ).join('');
+  document.querySelectorAll('[data-emailname]').forEach(el=>el.addEventListener('change',function(){
+    if(!cfg.teamEmails)cfg.teamEmails={};
+    cfg.teamEmails[this.dataset.emailname]=this.value;
+  }));
 }
 function renderTeamR(){document.getElementById('teamRows').innerHTML=cfg.team.map((m,i)=>'<div class="srow"><input class="fi" value="'+m.name+'" placeholder="Name" style="flex:1" data-ti="'+i+'" data-field="name"><input type="color" class="cdot" value="'+m.color+'" data-ci="'+i+'"><div class="delb" data-delt="'+i+'">&#x2715;</div></div>').join('');document.querySelectorAll('[data-ti]').forEach(el=>el.addEventListener('change',function(){cfg.team[+this.dataset.ti].name=this.value;cfg.team[+this.dataset.ti].initials=this.value.slice(0,2).toUpperCase();}));document.querySelectorAll('[data-ci]').forEach(el=>el.addEventListener('change',function(){cfg.team[+this.dataset.ci].color=this.value;}));document.querySelectorAll('[data-delt]').forEach(el=>el.addEventListener('click',function(){cfg.team.splice(+this.dataset.delt,1);renderTeamR();}));}
 function renderStgR(){document.getElementById('stageRows').innerHTML=cfg.stages.map((s,i)=>'<div class="srow"><input class="fi" value="'+s.label+'" placeholder="Stage" style="flex:1" data-si="'+i+'"><input type="color" class="cdot" value="'+s.color+'" data-sci="'+i+'"><div class="delb" data-dels="'+i+'">&#x2715;</div></div>').join('');document.querySelectorAll('[data-si]').forEach(el=>el.addEventListener('change',function(){cfg.stages[+this.dataset.si].label=this.value;cfg.stages[+this.dataset.si].id=this.value.toLowerCase().replace(/\s+/g,'_');}));document.querySelectorAll('[data-sci]').forEach(el=>el.addEventListener('change',function(){cfg.stages[+this.dataset.sci].color=this.value;}));document.querySelectorAll('[data-dels]').forEach(el=>el.addEventListener('click',function(){cfg.stages.splice(+this.dataset.dels,1);renderStgR();}));}
@@ -711,10 +742,22 @@ function saveSettings(){
   const u=document.getElementById('cfgurl').value.trim();if(u)cfg.apiUrl=u;
   const me=document.getElementById('cfgme').value;
   cfg.myName=me==='— No filter —'?'':me;
+  cfg.managerEmail=document.getElementById('cfgMgrEmail').value.trim();
+  cfg.chatWebhook=document.getElementById('cfgWebhook').value.trim();
+  // collect team emails
+  if(!cfg.teamEmails)cfg.teamEmails={};
+  document.querySelectorAll('[data-emailname]').forEach(el=>{if(el.value.trim())cfg.teamEmails[el.dataset.emailname]=el.value.trim();});
   document.getElementById('mchip').style.display=cfg.myName?'':'none';
   saveCfg();applyConfig();closeOv('ovCfg');renderAll();
+  // Push notification config to Apps Script
+  if(cfg.apiUrl&&(cfg.managerEmail||cfg.chatWebhook)){
+    apiFetch({action:'updateConfig',managerEmail:cfg.managerEmail||'',chatWebhook:cfg.chatWebhook||''})
+      .then(()=>toast('Settings saved &#10003;'))
+      .catch(()=>toast('Settings saved locally (sync failed)'));
+  } else {
+    toast('Settings saved &#10003;');
+  }
   if(cfg.apiUrl)loadTickets();
-  toast('Settings saved');
 }
 
 // TOAST
