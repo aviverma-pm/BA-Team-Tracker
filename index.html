@@ -267,7 +267,7 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle}
 <div class="tview" id="tview">
   <div class="twrap">
     <table>
-      <thead><tr><th>ID</th><th>Title</th><th>Assignee</th><th>Sprint</th><th>Stage</th><th>Priority</th><th>Type</th><th>Jira</th><th>Created</th></tr></thead>
+      <thead><tr><th>ID</th><th>Title</th><th>Assignee</th><th>Sprint</th><th>Stage</th><th>Priority</th><th>Type</th><th>Report</th><th>Jira</th><th>Created</th></tr></thead>
       <tbody id="tbody"></tbody>
     </table>
   </div>
@@ -286,8 +286,15 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle}
   </div>
   <div class="frow">
     <div class="fg"><label class="fl">Task Type</label><select class="fs" id="ftype"></select></div>
-    <div class="fg"><label class="fl">Sprint</label><select class="fs" id="fsprint"><option value="">&#8212; No Sprint &#8212;</option></select></div>
+    <div class="fg"><label class="fl">Report Type <span style="color:var(--tx3);font-weight:400">(optional)</span></label>
+      <select class="fs" id="freporttype">
+        <option value="">&#8212; Not Applicable &#8212;</option>
+        <option value="Admin">Admin</option>
+        <option value="Super Admin">Super Admin</option>
+        <option value="Both">Both</option>
+      </select></div>
   </div>
+  <div class="fg"><label class="fl">Sprint</label><select class="fs" id="fsprint"><option value="">&#8212; No Sprint &#8212;</option></select></div>
   <div class="fg"><label class="fl">Current Stage</label><div class="stgsel" id="stgsel"></div></div>
   <div class="frow">
     <div class="fg"><label class="fl">Jira ID</label><input class="fi" id="fjiraid" placeholder="DATA-142"></div>
@@ -302,6 +309,42 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle}
 <!-- DETAIL -->
 <div class="ov" id="ovDetail">
   <div class="modal modal-w" id="detailContent"></div>
+</div>
+
+<!-- EDIT TICKET -->
+<div class="ov" id="ovEdit">
+<div class="modal">
+  <div class="mx" id="mxEdit">&#x2715;</div>
+  <div class="mttl">&#9998; Edit Ticket <span id="editIdLabel" style="font-size:13px;color:var(--tx3);font-weight:400"></span></div>
+  <div class="fg"><label class="fl">Title</label><input class="fi" id="eftitle" placeholder="Ticket title"></div>
+  <div class="frow">
+    <div class="fg"><label class="fl">Assignee</label><select class="fs" id="efassignee"></select></div>
+    <div class="fg"><label class="fl">Priority</label>
+      <select class="fs" id="efpriority"><option value="High">&#128293; High</option><option value="Medium">&#9889; Medium</option><option value="Low">&#127807; Low</option></select></div>
+  </div>
+  <div class="frow">
+    <div class="fg"><label class="fl">Task Type</label><select class="fs" id="eftype"></select></div>
+    <div class="fg"><label class="fl">Report Type</label>
+      <select class="fs" id="efreporttype">
+        <option value="">&#8212; Not Applicable &#8212;</option>
+        <option value="Admin">Admin</option>
+        <option value="Super Admin">Super Admin</option>
+        <option value="Both">Both</option>
+      </select></div>
+  </div>
+  <div class="frow">
+    <div class="fg"><label class="fl">Sprint</label><select class="fs" id="efsprint"><option value="">&#8212; No Sprint &#8212;</option></select></div>
+    <div class="fg"><label class="fl">Dev Dependency?</label>
+      <select class="fs" id="efdep"><option value="false">No</option><option value="true">Yes &#8212; waiting on dev</option></select></div>
+  </div>
+  <div class="frow">
+    <div class="fg"><label class="fl">Jira ID</label><input class="fi" id="efjiraid" placeholder="DATA-142"></div>
+    <div class="fg"><label class="fl">Jira URL</label><input class="fi" id="efjiraurl" placeholder="https://hotelogix.atlassian.net/browse/..."></div>
+  </div>
+  <div class="fg"><label class="fl">Description</label><textarea class="fta" id="efdesc" placeholder="Context, mat view, links..."></textarea></div>
+  <input type="hidden" id="efid">
+  <button class="btn btn-p" id="btnSaveEdit" style="width:100%;padding:10px;font-size:14px;border-radius:10px;justify-content:center;margin-top:6px">Save Changes</button>
+</div>
 </div>
 
 <!-- SPRINTS -->
@@ -528,10 +571,10 @@ function buildCols(){
   const todo=ids.filter(id=>id==='todo');
   const wip=ids.filter(id=>!done.includes(id)&&!dep.includes(id)&&!todo.includes(id));
   return[
-    {label:'Backlog',    stages:todo.length?todo:[ids[0]],color:'#6b7280'},
-    {label:'In Progress',stages:wip,                      color:'#3b82f6'},
-    {label:'Blocked',    stages:dep,                       color:'#fbbf24'},
-    {label:'Done',       stages:done,                      color:'#34d399'},
+    {label:'Backlog',    stages:todo.length?todo:[ids[0]], dropStage:'todo',    color:'#6b7280'},
+    {label:'In Progress',stages:wip,                       dropStage:wip[0]||'sql', color:'#3b82f6'},
+    {label:'Blocked',    stages:dep,                        dropStage:'dep',     color:'#fbbf24'},
+    {label:'Done',       stages:done,                       dropStage:'done',    color:'#34d399'},
   ];
 }
 
@@ -540,7 +583,7 @@ function renderKanban(){
   document.getElementById('board').innerHTML=cols.map(col=>{
     const ct=list.filter(t=>col.stages.includes(t.stage));
     // Map col to its primary stage id for drop target
-    const dropStage=col.stages[0]||'todo';
+    const dropStage=col.dropStage||col.stages[0]||'todo';
     return '<div class="col" data-dropstage="'+dropStage+'">'
       +'<div class="colhd"><div class="collbl"><div class="coldot" style="background:'+col.color+'"></div>'+col.label+'</div><div class="colcnt">'+ct.length+'</div></div>'
       +(ct.length?ct.map(tCard).join(''):'<div class="ecol">No tickets</div>')
@@ -604,11 +647,12 @@ function tCard(t){
   const spr=t.sprint?'<span style="font-size:9px;color:var(--tx3);margin-left:4px">&#127939; '+t.sprint+'</span>':'';
   // Only show stage badge — one single pill with current stage color
   const stagePill='<span class="stgb" style="background:'+st.color+'18;color:'+st.color+';border:1px solid '+st.color+'33">'+st.label+'</span>';
+  const rtBadge=t.reportType?'<span style="display:inline-flex;align-items:center;font-size:9px;font-weight:600;padding:2px 7px;border-radius:5px;margin-top:4px;margin-left:4px;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);color:#a78bfa">'+t.reportType+'</span>':'';
   const flags=(isD?'<span class="donef">&#10003; Done</span>':(isB?'<span class="depf">&#8987; Dev Dep</span>':''));
   return '<div class="ticket'+(isD?' done-card':'')+'" style="--tc:'+st.color+'" data-id="'+t.id+'" draggable="true">'
     +'<div class="ttop"><span class="tid">'+t.id+'</span><span class="prio '+pcls(t.priority)+'">'+t.priority+'</span></div>'
     +'<div class="ttl">'+t.title+'</div>'
-    +stagePill+flags+jira+spr
+    +stagePill+flags+rtBadge+jira+spr
     +'<div class="ptrack"><div class="pfill" style="width:'+prog+'%;background:'+st.color+'"></div></div>'
     +'<div class="tfoot">'
     +'<span style="font-size:10px;color:var(--tx3)">'+(t.type||'')+'</span>'
@@ -631,6 +675,7 @@ function renderTable(){
       +'<td><span style="display:inline-flex;font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px;background:'+st.color+'18;color:'+st.color+'">'+st.label+'</span></td>'
       +'<td><span class="prio '+pcls(t.priority)+'" style="padding:2px 9px;border-radius:5px;font-size:11px">'+t.priority+'</span></td>'
       +'<td style="font-size:11px;color:var(--tx3)">'+(t.type||'—')+'</td>'
+      +'<td style="font-size:11px;color:#a78bfa">'+(t.reportType||'—')+'</td>'
       +'<td>'+jira+'</td>'
       +'<td style="font-size:11px;color:var(--tx3)">'+t.created+'</td></tr>';
   }).join('');
@@ -683,6 +728,7 @@ async function createTicket(){
     assignee:document.getElementById('fassignee').value,
     priority:document.getElementById('fpriority').value,
     type:document.getElementById('ftype').value,
+    reportType:document.getElementById('freporttype').value,
     stage:selStg,
     desc:document.getElementById('fdesc').value,
     dep:document.getElementById('fdep').value==='true',
@@ -713,6 +759,7 @@ function openDetail(id){
   const smove=cfg.stages.map(s=>'<div class="sopt" data-sid="'+s.id+'" data-sc="'+s.color+'" style="color:'+s.color+';border-color:'+(t.stage===s.id?s.color:'var(--bd)')+';background:'+(t.stage===s.id?s.color+'18':'transparent')+'">'+s.label+'</div>').join('');
   const cmtHtml=comments.length?comments.map(c=>'<div class="cmt"><div class="cw">'+c.who+'<span class="cts">'+(c.ts||'')+'</span></div>'+c.text+'</div>').join(''):'<div style="font-size:12px;color:var(--tx3);padding:5px 0">No comments yet</div>';
   const jiraB=t.jiraId?'<div class="di"><div class="dl">Jira</div><div class="dv"><a class="jiraf" href="'+(t.jiraUrl||'#')+'" target="_blank">&#11041; '+t.jiraId+'</a></div></div>':'';
+  const rtB=t.reportType?'<div class="di"><div class="dl">Report Type</div><div class="dv" style="color:#a78bfa">'+t.reportType+'</div></div>':'';
 
   document.getElementById('detailContent').innerHTML=
     '<div class="mx" id="mxDet">&#x2715;</div>'
@@ -720,7 +767,8 @@ function openDetail(id){
     +'<span style="font-size:10px;color:var(--tx3);font-weight:600">'+t.id+'</span>'
     +'<div style="display:flex;gap:6px;align-items:center">'
     +(isD?'<button class="btn btn-d bsm" data-mkd="'+t.id+'" data-val="false">&#8617; Reopen</button>':'<button class="btn btn-s bsm" data-mkd="'+t.id+'" data-val="true">&#10003; Mark Done</button>')
-    +'<button class="btn btn-d bsm" id="btnDelTicket" style="margin-left:2px">&#128465; Delete</button>'
+    +'<button class="btn btn-g bsm" id="btnEditTicket">&#9998; Edit</button>'
+    +'<button class="btn btn-d bsm" id="btnDelTicket">&#128465;</button>'
     +'<span class="prio '+pcls(t.priority)+'" style="padding:2px 10px;border-radius:5px;font-size:11px">'+t.priority+'</span></div></div>'
     +'<div style="font-size:17px;font-weight:700;letter-spacing:-0.3px;line-height:1.35;margin-bottom:4px'+(isD?';text-decoration:line-through;color:var(--tx3)':'')+'">' +t.title+'</div>'
     +'<div class="dsbar">'+dsbar+'</div>'
@@ -732,7 +780,7 @@ function openDetail(id){
     +'<div class="di"><div class="dl">Stage</div><div class="dv" style="color:'+st.color+'">'+st.label+'</div></div>'
     +'<div class="di"><div class="dl">Sprint</div><div class="dv">'+(t.sprint||'—')+'</div></div>'
     +'<div class="di"><div class="dl">Created</div><div class="dv">'+t.created+'</div></div>'
-    +jiraB+'</div>'
+    +jiraB+rtB+'</div>'
     +'<div style="margin-top:13px"><div class="fl">Description</div><div style="font-size:13px;color:var(--tx2);line-height:1.6;background:var(--sf);border-radius:8px;padding:10px 12px;border:1px solid var(--bd)">'+(t.desc||'No description.')+'</div></div>'
     +'<div style="margin-top:13px"><div class="fl">Move Stage</div><div class="stgsel" id="stgmove">'+smove+'</div></div>'
     +'<div style="margin-top:13px"><div class="fl">Comments ('+comments.length+')</div><div class="cmtlist">'+cmtHtml+'</div>'
@@ -769,6 +817,9 @@ function openDetail(id){
   document.querySelectorAll('#stgmove .sopt').forEach(el=>el.addEventListener('click',function(){moveStage(t.id,this.dataset.sid);}));
   // bind post comment
   document.querySelectorAll('[data-postcmt]').forEach(el=>el.addEventListener('click',function(){postComment(this.dataset.postcmt);}));
+  // bind edit
+  const editBtn=document.getElementById('btnEditTicket');
+  if(editBtn) editBtn.addEventListener('click',function(){closeOv('ovDetail');openEditModal(t.id);});
 }
 
 async function markDone(id,isDone){
@@ -808,6 +859,53 @@ async function deleteTicket(id){
     toast('&#10007; Delete sync failed — ticket restored',4000);
     ss('error');
   }
+}
+
+function openEditModal(id){
+  const t=tickets.find(x=>x.id===id);if(!t)return;
+  document.getElementById('efid').value=id;
+  document.getElementById('editIdLabel').textContent='— '+id;
+  document.getElementById('eftitle').value=t.title||'';
+  document.getElementById('efdesc').value=t.desc||'';
+  document.getElementById('efjiraid').value=t.jiraId||'';
+  document.getElementById('efjiraurl').value=t.jiraUrl||'';
+  document.getElementById('efassignee').innerHTML=cfg.team.map(m=>'<option'+(m.name===t.assignee?' selected':'')+'>'+m.name+'</option>').join('');
+  document.getElementById('eftype').innerHTML=cfg.types.map(tp=>'<option'+(tp===t.type?' selected':'')+'>'+tp+'</option>').join('');
+  document.getElementById('efpriority').value=t.priority||'Medium';
+  document.getElementById('efdep').value=String(t.dep===true||t.dep==='true');
+  document.getElementById('efreporttype').value=t.reportType||'';
+  document.getElementById('efsprint').innerHTML='<option value="">— No Sprint —</option>'+sprints.map(s=>'<option'+(s.name===t.sprint?' selected':'')+'>'+s.name+'</option>').join('');
+  openOv('ovEdit');
+}
+
+async function saveEdit(){
+  const id=document.getElementById('efid').value;
+  const t=tickets.find(x=>x.id===id);if(!t)return;
+  const btn=document.getElementById('btnSaveEdit');
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span> Saving...';
+  const updates={
+    title:      document.getElementById('eftitle').value.trim(),
+    assignee:   document.getElementById('efassignee').value,
+    priority:   document.getElementById('efpriority').value,
+    type:       document.getElementById('eftype').value,
+    reportType: document.getElementById('efreporttype').value,
+    sprint:     document.getElementById('efsprint').value,
+    dep:        document.getElementById('efdep').value,
+    jiraId:     document.getElementById('efjiraid').value.trim(),
+    jiraUrl:    document.getElementById('efjiraurl').value.trim(),
+    desc:       document.getElementById('efdesc').value,
+  };
+  if(!updates.title){toast('&#9888; Title cannot be empty');btn.disabled=false;btn.textContent='Save Changes';return;}
+  // Apply locally
+  Object.assign(t, updates);
+  t.dep=(updates.dep==='true');
+  closeOv('ovEdit');renderAll();
+  logAct('Edited '+id+': '+updates.title,'#a78bfa');
+  toast('&#10003; Ticket updated');
+  try{
+    await apiFetch({action:'update',id,...updates});
+  }catch(e){ss('error');toast('&#10007; Sync failed',4000);}
+  btn.disabled=false;btn.textContent='Save Changes';
 }
 
 async function postComment(id){
@@ -950,6 +1048,9 @@ function applyConfig(){
 
 // WIRE STATIC BUTTONS — all via addEventListener, no inline onclick
 document.getElementById('btnNew').addEventListener('click',openNewModal);
+document.getElementById('btnSaveEdit').addEventListener('click',saveEdit);
+document.getElementById('mxEdit').addEventListener('click',function(){closeOv('ovEdit');});
+document.getElementById('ovEdit').addEventListener('click',function(e){if(e.target===this)closeOv('ovEdit');});
 document.getElementById('btnRef').addEventListener('click',loadTickets);
 document.getElementById('btnAct').addEventListener('click',openActModal);
 document.getElementById('btnSpr').addEventListener('click',openSprintModal);
@@ -969,7 +1070,7 @@ document.getElementById('mxAct').addEventListener('click',function(){closeOv('ov
 document.getElementById('mxCfg').addEventListener('click',function(){closeOv('ovCfg');});
 
 // Close overlay on backdrop click
-['ovNew','ovDetail','ovSprint','ovAct','ovCfg'].forEach(id=>{
+['ovNew','ovDetail','ovEdit','ovSprint','ovAct','ovCfg'].forEach(id=>{
   document.getElementById(id).addEventListener('click',function(e){if(e.target===this)closeOv(id);});
 });
 
