@@ -198,6 +198,13 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:4px}
 @keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+/* DRAG & DROP */
+.ticket.dragging{opacity:0.35;transform:scale(0.97);box-shadow:none}
+.col.drag-over{background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.4);border-style:dashed}
+.col.drag-over .ecol{border-color:rgba(59,130,246,0.4);color:var(--blue)}
+/* DELETE CONFIRM */
+.del-confirm{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:10px;padding:12px 14px;margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.del-confirm span{font-size:12px;color:var(--red)}
 .ticket{animation:fi 0.18s ease}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);background:#1e1e2a;border:1px solid var(--bd2);border-radius:10px;padding:10px 18px;font-size:13px;color:var(--tx);box-shadow:var(--shlg);opacity:0;transition:all 0.25s;z-index:999;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -343,16 +350,44 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle}
   <div class="ssec"><div class="ssect">Task Types</div><div id="typeRows"></div><button class="addb" id="btnAddType">+ Add Type</button></div>
 
   <div class="ssec">
-    <div class="ssect">&#128276; Notifications</div>
-    <div class="fg"><label class="fl">Manager Email (gets all alerts)</label><input class="fi" id="cfgMgrEmail" placeholder="yourname@hotelogix.com"></div>
-    <div class="fg"><label class="fl">Google Chat Webhook URL</label><input class="fi" id="cfgWebhook" placeholder="https://chat.googleapis.com/v1/spaces/..."></div>
-    <div style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.15);border-radius:8px;padding:10px 12px;margin-top:4px">
-      <div style="font-size:11px;color:var(--blue);font-weight:600;margin-bottom:6px">&#9432; How to get Google Chat Webhook</div>
-      <div style="font-size:11px;color:var(--tx2);line-height:1.6">1. Open your Google Chat space<br>2. Click space name at top &#8594; <b>Apps &amp; Integrations</b><br>3. Click <b>Webhooks</b> &#8594; <b>Add Webhook</b><br>4. Name it "Superset Ops" &#8594; copy the URL &#8594; paste above</div>
+    <div class="ssect">&#128276; Notification Config <span style="font-size:9px;color:var(--tx3);font-weight:400;text-transform:none;letter-spacing:0">(read-only — edit in Code.gs)</span></div>
+
+    <!-- Status row -->
+    <div id="notifStatus" style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap"></div>
+
+    <!-- Manager email -->
+    <div class="fg">
+      <label class="fl">Manager Email</label>
+      <div style="display:flex;align-items:center;gap:8px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);padding:8px 12px">
+        <span style="font-size:13px;color:var(--grn)">&#9679;</span>
+        <span id="notifMgrEmail" style="font-size:13px;color:var(--tx);font-family:monospace">—</span>
+      </div>
     </div>
-    <div style="margin-top:10px">
-      <div style="font-size:11px;color:var(--tx3);font-weight:600;text-transform:uppercase;letter-spacing:0.7px;margin-bottom:8px">Team Member Emails</div>
-      <div id="teamEmailRows"></div>
+
+    <!-- Chat webhook -->
+    <div class="fg">
+      <label class="fl">Google Chat Webhook</label>
+      <div style="display:flex;align-items:center;gap:8px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);padding:8px 12px">
+        <span id="webhookDot" style="font-size:13px">&#9679;</span>
+        <span id="notifWebhook" style="font-size:13px;color:var(--tx);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:420px">Not configured</span>
+      </div>
+    </div>
+
+    <!-- Team emails table -->
+    <div class="fg">
+      <label class="fl">Team Emails</label>
+      <div id="notifTeamTable" style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--rsm);overflow:hidden"></div>
+    </div>
+
+    <!-- Triggers -->
+    <div class="fg">
+      <label class="fl">Active Triggers</label>
+      <div id="notifTriggers" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+    </div>
+
+    <div style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.15);border-radius:8px;padding:10px 12px;margin-top:4px">
+      <div style="font-size:11px;color:var(--blue);font-weight:600;margin-bottom:4px">&#9432; To update notification config</div>
+      <div style="font-size:11px;color:var(--tx2);line-height:1.7">Edit <code style="background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:4px">Code.gs</code> → update the <code style="background:rgba(255,255,255,0.08);padding:1px 5px;border-radius:4px">CONFIG</code> block → redeploy as New Version. Changes reflect here on next settings open.</div>
     </div>
   </div>
 
@@ -393,7 +428,9 @@ const D = {
 let cfg=loadCfg(), tickets=[], sprints=[], activity=[], fMode='all', fAv='', selStg='';
 
 function loadCfg(){try{const s=localStorage.getItem('hlx3');if(s)return Object.assign({},D,JSON.parse(s));}catch(e){}return Object.assign({},D);}
-function fmtIST(d){if(!d)return '';try{const dt=d instanceof Date?d:new Date(d);if(isNaN(dt))return d;return dt.toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});}catch(e){return d;}}
+function fmtIST(d){if(!d)return '';try{const dt=d instanceof Date?d:new Date(d);if(isNaN(dt))return String(d);return dt.toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'long',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});}catch(e){return String(d);}}
+function fmtDate(d){if(!d)return '';// Already formatted string from Apps Script e.g. "14 Jun 2025, 03:56 PM"
+return d;}
 function saveCfg(){localStorage.setItem('hlx3',JSON.stringify(cfg));}
 function loadSpr(){try{const s=localStorage.getItem('hlxsp');if(s)return JSON.parse(s);}catch(e){}return [];}
 function saveSpr(){localStorage.setItem('hlxsp',JSON.stringify(sprints));}
@@ -502,9 +539,59 @@ function renderKanban(){
   const list=getFiltered(),cols=buildCols();
   document.getElementById('board').innerHTML=cols.map(col=>{
     const ct=list.filter(t=>col.stages.includes(t.stage));
-    return '<div class="col"><div class="colhd"><div class="collbl"><div class="coldot" style="background:'+col.color+'"></div>'+col.label+'</div><div class="colcnt">'+ct.length+'</div></div>'+(ct.length?ct.map(tCard).join(''):'<div class="ecol">No tickets</div>')+'</div>';
+    // Map col to its primary stage id for drop target
+    const dropStage=col.stages[0]||'todo';
+    return '<div class="col" data-dropstage="'+dropStage+'">'
+      +'<div class="colhd"><div class="collbl"><div class="coldot" style="background:'+col.color+'"></div>'+col.label+'</div><div class="colcnt">'+ct.length+'</div></div>'
+      +(ct.length?ct.map(tCard).join(''):'<div class="ecol">No tickets</div>')
+      +'</div>';
   }).join('');
-  document.querySelectorAll('.ticket').forEach(el=>el.addEventListener('click',function(){openDetail(this.dataset.id);}));
+  // Click to open detail
+  document.querySelectorAll('.ticket').forEach(el=>el.addEventListener('click',function(e){
+    if(e.target.classList.contains('jiraf')||e.target.closest('.jiraf'))return;
+    openDetail(this.dataset.id);
+  }));
+  // Drag & drop
+  initDragDrop();
+}
+
+function initDragDrop(){
+  let dragId=null;
+  document.querySelectorAll('.ticket').forEach(card=>{
+    card.addEventListener('dragstart',function(e){
+      dragId=this.dataset.id;
+      this.classList.add('dragging');
+      e.dataTransfer.effectAllowed='move';
+    });
+    card.addEventListener('dragend',function(){
+      this.classList.remove('dragging');
+      document.querySelectorAll('.col').forEach(c=>c.classList.remove('drag-over'));
+      dragId=null;
+    });
+  });
+  document.querySelectorAll('.col').forEach(col=>{
+    col.addEventListener('dragover',function(e){
+      e.preventDefault();e.dataTransfer.dropEffect='move';
+      this.classList.add('drag-over');
+    });
+    col.addEventListener('dragleave',function(){this.classList.remove('drag-over');});
+    col.addEventListener('drop',function(e){
+      e.preventDefault();this.classList.remove('drag-over');
+      if(!dragId)return;
+      const newStage=this.dataset.dropstage;
+      const t=tickets.find(x=>x.id===dragId);
+      if(!t||t.stage===newStage)return;
+      const oldStage=t.stage;
+      t.stage=newStage;
+      t.dep=(newStage==='dep');
+      if(newStage==='done')t.done=true;
+      else if(oldStage==='done')t.done=false;
+      renderAll();
+      toast('Moved to '+stgOf(newStage).label);
+      apiFetch({action:'update',id:dragId,stage:newStage,dep:String(t.dep),done:String(t.done)})
+        .catch(()=>{ss('error');toast('Sync failed',3000);});
+    });
+  });
 }
 
 function tCard(t){
@@ -513,16 +600,22 @@ function tCard(t){
   const prog=cfg.stages.length>1?Math.round(si/(cfg.stages.length-1)*100):0;
   const isB=t.dep===true||t.dep==='true';
   const isD=t.stage==='done'||t.done===true||t.done==='true';
-  const jira=t.jiraId?'<a class="jiraf" href="'+(t.jiraUrl||'#')+'" target="_blank">&#11041; '+t.jiraId+'</a>':'';
+  const jira=t.jiraId?'<a class="jiraf" href="'+(t.jiraUrl||'#')+'" target="_blank" onclick="event.stopPropagation()">&#11041; '+t.jiraId+'</a>':'';
   const spr=t.sprint?'<span style="font-size:9px;color:var(--tx3);margin-left:4px">&#127939; '+t.sprint+'</span>':'';
-  return '<div class="ticket'+(isD?' done-card':'')+'" style="--tc:'+st.color+'" data-id="'+t.id+'">'
+  // Only show stage badge — one single pill with current stage color
+  const stagePill='<span class="stgb" style="background:'+st.color+'18;color:'+st.color+';border:1px solid '+st.color+'33">'+st.label+'</span>';
+  const flags=(isD?'<span class="donef">&#10003; Done</span>':(isB?'<span class="depf">&#8987; Dev Dep</span>':''));
+  return '<div class="ticket'+(isD?' done-card':'')+'" style="--tc:'+st.color+'" data-id="'+t.id+'" draggable="true">'
     +'<div class="ttop"><span class="tid">'+t.id+'</span><span class="prio '+pcls(t.priority)+'">'+t.priority+'</span></div>'
     +'<div class="ttl">'+t.title+'</div>'
-    +'<span class="stgb" style="background:'+st.color+'18;color:'+st.color+'">'+st.label+'</span>'
-    +(isD?'<span class="donef">&#10003; Done</span>':isB?'<span class="depf">&#8987; Dev Dep</span>':'')
-    +jira+spr
+    +stagePill+flags+jira+spr
     +'<div class="ptrack"><div class="pfill" style="width:'+prog+'%;background:'+st.color+'"></div></div>'
-    +'<div class="tfoot"><span style="font-size:10px;color:var(--tx3)">'+(t.type||'')+'</span><div class="tav" style="background:'+av.color+'18;color:'+av.color+'">'+av.initials+'</div></div></div>';
+    +'<div class="tfoot">'
+    +'<span style="font-size:10px;color:var(--tx3)">'+(t.type||'')+'</span>'
+    +'<div style="display:flex;align-items:center;gap:6px">'
+    +(t.created?'<span style="font-size:9px;color:var(--tx3)">'+t.created+'</span>':'')
+    +'<div class="tav" style="background:'+av.color+'18;color:'+av.color+'">'+av.initials+'</div>'
+    +'</div></div></div>';
 }
 
 function renderTable(){
@@ -627,6 +720,7 @@ function openDetail(id){
     +'<span style="font-size:10px;color:var(--tx3);font-weight:600">'+t.id+'</span>'
     +'<div style="display:flex;gap:6px;align-items:center">'
     +(isD?'<button class="btn btn-d bsm" data-mkd="'+t.id+'" data-val="false">&#8617; Reopen</button>':'<button class="btn btn-s bsm" data-mkd="'+t.id+'" data-val="true">&#10003; Mark Done</button>')
+    +'<button class="btn btn-d bsm" id="btnDelTicket" style="margin-left:2px">&#128465; Delete</button>'
     +'<span class="prio '+pcls(t.priority)+'" style="padding:2px 10px;border-radius:5px;font-size:11px">'+t.priority+'</span></div></div>'
     +'<div style="font-size:17px;font-weight:700;letter-spacing:-0.3px;line-height:1.35;margin-bottom:4px'+(isD?';text-decoration:line-through;color:var(--tx3)':'')+'">' +t.title+'</div>'
     +'<div class="dsbar">'+dsbar+'</div>'
@@ -651,6 +745,26 @@ function openDetail(id){
   document.getElementById('mxDet').onclick=function(){closeOv('ovDetail');};
   // bind mark done
   document.querySelectorAll('[data-mkd]').forEach(el=>el.addEventListener('click',function(){markDone(this.dataset.mkd,this.dataset.val==='true');}));
+  // bind delete with confirm
+  const delBtn=document.getElementById('btnDelTicket');
+  if(delBtn){
+    delBtn.addEventListener('click',function(){
+      // inline confirm inside modal
+      const existing=document.getElementById('delConfirmBox');
+      if(existing){existing.remove();return;}
+      const box=document.createElement('div');
+      box.id='delConfirmBox';
+      box.className='del-confirm';
+      box.innerHTML='<span>&#9888; Delete this ticket permanently?</span>'
+        +'<div style="display:flex;gap:6px">'
+        +'<button class="btn btn-d bsm" id="confirmDelYes">Yes, delete</button>'
+        +'<button class="btn btn-g bsm" id="confirmDelNo">Cancel</button>'
+        +'</div>';
+      delBtn.closest('div').after(box);
+      document.getElementById('confirmDelYes').onclick=function(){deleteTicket(t.id);};
+      document.getElementById('confirmDelNo').onclick=function(){box.remove();};
+    });
+  }
   // bind stage move
   document.querySelectorAll('#stgmove .sopt').forEach(el=>el.addEventListener('click',function(){moveStage(t.id,this.dataset.sid);}));
   // bind post comment
@@ -668,11 +782,32 @@ async function markDone(id,isDone){
 
 async function moveStage(id,stage){
   const t=tickets.find(x=>x.id===id);if(!t)return;
-  t.stage=stage;t.dep=(stage==='dep');if(stage==='done')t.done=true;
+  t.stage=stage;
+  t.dep=(stage==='dep');
+  if(stage==='done') t.done=true;
+  else if(stage!=='review') t.done=false;
   closeOv('ovDetail');renderAll();
-  logAct('Stage → '+stage+': '+t.title,'#3b82f6');
-  toast('Stage updated');
+  const stgLabel=stgOf(stage).label;
+  logAct('Stage → '+stgLabel+': '+t.title,'#3b82f6');
+  toast('Moved to '+stgLabel);
   try{await apiFetch({action:'update',id,stage,dep:String(t.dep),done:String(t.done||false)});}catch(e){ss('error');toast('&#10007; Sync failed',4000);}
+}
+
+async function deleteTicket(id){
+  const t=tickets.find(x=>x.id===id);if(!t)return;
+  closeOv('ovDetail');
+  // Optimistic local delete
+  tickets=tickets.filter(x=>x.id!==id);
+  renderAll();
+  logAct('Deleted '+id+': '+t.title,'#f87171');
+  toast('Ticket deleted');
+  try{await apiFetch({action:'deleteTicket',id});}
+  catch(e){
+    // Restore if sync failed
+    tickets.unshift(t);renderAll();
+    toast('&#10007; Delete sync failed — ticket restored',4000);
+    ss('error');
+  }
 }
 
 async function postComment(id){
@@ -716,22 +851,75 @@ function openSettings(){
   document.getElementById('cfgurl').value=cfg.apiUrl||'';
   document.getElementById('cfgme').innerHTML=['— No filter —',...cfg.team.map(m=>m.name)].map(n=>'<option>'+n+'</option>').join('');
   document.getElementById('cfgme').value=cfg.myName||'— No filter —';
-  document.getElementById('cfgMgrEmail').value=cfg.managerEmail||'';
-  document.getElementById('cfgWebhook').value=cfg.chatWebhook||'';
-  renderTeamR();renderStgR();renderTypeR();renderTeamEmailR();openOv('ovCfg');
+  renderTeamR();renderStgR();renderTypeR();renderNotifPanel();openOv('ovCfg');
 }
 
-function renderTeamEmailR(){
-  document.getElementById('teamEmailRows').innerHTML=cfg.team.map((m,i)=>
-    '<div class="srow" style="margin-bottom:8px">'+
-    '<span style="font-size:12px;font-weight:600;color:var(--tx2);width:80px;flex-shrink:0">'+m.name+'</span>'+
-    '<input class="fi" value="'+(cfg.teamEmails&&cfg.teamEmails[m.name]||'')+'" placeholder="'+m.name.toLowerCase()+'@hotelogix.com" data-emailname="'+m.name+'" style="flex:1">'+
-    '</div>'
+function renderNotifPanel(){
+  // Fetch live config from Apps Script to show real values
+  if(cfg.apiUrl){
+    apiFetch({action:'getNotifConfig'}).then(d=>{
+      if(d&&d.config) populateNotifPanel(d.config);
+    }).catch(()=>populateNotifPanel(null));
+  } else {
+    populateNotifPanel(null);
+  }
+}
+
+function populateNotifPanel(liveConfig){
+  // Manager email
+  const mgr = (liveConfig&&liveConfig.managerEmail)||cfg.managerEmail||'Not set';
+  document.getElementById('notifMgrEmail').textContent = mgr;
+
+  // Webhook
+  const wh = (liveConfig&&liveConfig.chatWebhook)||cfg.chatWebhook||'';
+  const whDot = document.getElementById('webhookDot');
+  const whEl  = document.getElementById('notifWebhook');
+  if(wh){
+    whDot.style.color='var(--grn)';
+    // Show only domain part for readability
+    try{ whEl.textContent = new URL(wh).hostname + '/...'; }catch(e){ whEl.textContent = wh.slice(0,60)+'...'; }
+    whEl.title = wh;
+  } else {
+    whDot.style.color='var(--red)';
+    whEl.textContent='Not configured';
+    whEl.style.color='var(--tx3)';
+  }
+
+  // Status badges
+  const statuses = [
+    {label:'Email', ok: mgr!=='Not set', icon:'✉'},
+    {label:'Chat',  ok: !!wh,            icon:'💬'},
+  ];
+  document.getElementById('notifStatus').innerHTML = statuses.map(s=>
+    '<div style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;background:'+(s.ok?'rgba(52,211,153,0.1)':'rgba(248,113,113,0.1)')+';border:1px solid '+(s.ok?'rgba(52,211,153,0.25)':'rgba(248,113,113,0.25)')+';color:'+(s.ok?'var(--grn)':'var(--red)')+'">'+s.icon+' '+s.label+' '+(s.ok?'Active':'Not set')+'</div>'
   ).join('');
-  document.querySelectorAll('[data-emailname]').forEach(el=>el.addEventListener('change',function(){
-    if(!cfg.teamEmails)cfg.teamEmails={};
-    cfg.teamEmails[this.dataset.emailname]=this.value;
-  }));
+
+  // Team emails table
+  const emails = (liveConfig&&liveConfig.teamEmails)||cfg.teamEmails||{};
+  document.getElementById('notifTeamTable').innerHTML = cfg.team.map((m,i)=>{
+    const email = emails[m.name]||'';
+    const hasEmail = !!email;
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:'+(i<cfg.team.length-1?'1px solid var(--bd)':'none')+'">'
+      +'<div style="display:flex;align-items:center;gap:8px"><div class="tav" style="background:'+m.color+'18;color:'+m.color+'">'+m.initials+'</div><span style="font-size:13px;font-weight:500">'+m.name+'</span></div>'
+      +'<span style="font-size:12px;font-family:monospace;color:'+(hasEmail?'var(--tx2)':'var(--tx3)')+'">'+( hasEmail?email:'no email set')+'</span>'
+      +'<span style="font-size:10px;'+(hasEmail?'color:var(--grn)':'color:var(--red)')+'">'+( hasEmail?'&#10003;':'&#10007;')+'</span>'
+      +'</div>';
+  }).join('');
+
+  // Triggers
+  const triggers = [
+    {k:'ON_CREATE',       l:'New Ticket'},
+    {k:'ON_STAGE_MOVE',   l:'Stage Move'},
+    {k:'ON_COMMENT',      l:'Comment'},
+    {k:'ON_DONE',         l:'Done'},
+    {k:'ON_DEV_DEP',      l:'Dev Dep'},
+    {k:'ON_HIGH_PRIORITY',l:'High Priority'},
+  ];
+  const activeTriggers = (liveConfig&&liveConfig.notify)||{};
+  document.getElementById('notifTriggers').innerHTML = triggers.map(t=>{
+    const on = activeTriggers[t.k]!==false; // default true if not returned
+    return '<div style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:'+(on?'rgba(52,211,153,0.1)':'rgba(255,255,255,0.04)')+';border:1px solid '+(on?'rgba(52,211,153,0.25)':'var(--bd)')+';color:'+(on?'var(--grn)':'var(--tx3)')+'">'+( on?'&#10003;':'&#9675;')+' '+t.l+'</div>';
+  }).join('');
 }
 function renderTeamR(){document.getElementById('teamRows').innerHTML=cfg.team.map((m,i)=>'<div class="srow"><input class="fi" value="'+m.name+'" placeholder="Name" style="flex:1" data-ti="'+i+'" data-field="name"><input type="color" class="cdot" value="'+m.color+'" data-ci="'+i+'"><div class="delb" data-delt="'+i+'">&#x2715;</div></div>').join('');document.querySelectorAll('[data-ti]').forEach(el=>el.addEventListener('change',function(){cfg.team[+this.dataset.ti].name=this.value;cfg.team[+this.dataset.ti].initials=this.value.slice(0,2).toUpperCase();}));document.querySelectorAll('[data-ci]').forEach(el=>el.addEventListener('change',function(){cfg.team[+this.dataset.ci].color=this.value;}));document.querySelectorAll('[data-delt]').forEach(el=>el.addEventListener('click',function(){cfg.team.splice(+this.dataset.delt,1);renderTeamR();}));}
 function renderStgR(){document.getElementById('stageRows').innerHTML=cfg.stages.map((s,i)=>'<div class="srow"><input class="fi" value="'+s.label+'" placeholder="Stage" style="flex:1" data-si="'+i+'"><input type="color" class="cdot" value="'+s.color+'" data-sci="'+i+'"><div class="delb" data-dels="'+i+'">&#x2715;</div></div>').join('');document.querySelectorAll('[data-si]').forEach(el=>el.addEventListener('change',function(){cfg.stages[+this.dataset.si].label=this.value;cfg.stages[+this.dataset.si].id=this.value.toLowerCase().replace(/\s+/g,'_');}));document.querySelectorAll('[data-sci]').forEach(el=>el.addEventListener('change',function(){cfg.stages[+this.dataset.sci].color=this.value;}));document.querySelectorAll('[data-dels]').forEach(el=>el.addEventListener('click',function(){cfg.stages.splice(+this.dataset.dels,1);renderStgR();}));}
@@ -742,21 +930,9 @@ function saveSettings(){
   const u=document.getElementById('cfgurl').value.trim();if(u)cfg.apiUrl=u;
   const me=document.getElementById('cfgme').value;
   cfg.myName=me==='— No filter —'?'':me;
-  cfg.managerEmail=document.getElementById('cfgMgrEmail').value.trim();
-  cfg.chatWebhook=document.getElementById('cfgWebhook').value.trim();
-  // collect team emails
-  if(!cfg.teamEmails)cfg.teamEmails={};
-  document.querySelectorAll('[data-emailname]').forEach(el=>{if(el.value.trim())cfg.teamEmails[el.dataset.emailname]=el.value.trim();});
   document.getElementById('mchip').style.display=cfg.myName?'':'none';
   saveCfg();applyConfig();closeOv('ovCfg');renderAll();
-  // Push notification config to Apps Script
-  if(cfg.apiUrl&&(cfg.managerEmail||cfg.chatWebhook)){
-    apiFetch({action:'updateConfig',managerEmail:cfg.managerEmail||'',chatWebhook:cfg.chatWebhook||''})
-      .then(()=>toast('Settings saved &#10003;'))
-      .catch(()=>toast('Settings saved locally (sync failed)'));
-  } else {
-    toast('Settings saved &#10003;');
-  }
+  toast('Settings saved &#10003;');
   if(cfg.apiUrl)loadTickets();
 }
 
