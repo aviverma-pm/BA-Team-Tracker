@@ -511,7 +511,7 @@ function apiFetch(params){
     const qs=Object.entries(params).map(([k,v])=>encodeURIComponent(k)+'='+encodeURIComponent(typeof v==='object'?JSON.stringify(v):String(v))).join('&');
     const url=cfg.apiUrl+'?'+qs+'&callback='+cb;
     let done=false;
-    const timer=setTimeout(()=>{if(done)return;done=true;cleanup();ss('error');rej(new Error('Timeout — redeploy Apps Script'));},15000);
+    const timer=setTimeout(()=>{if(done)return;done=true;cleanup();ss('error');rej(new Error('Timeout — server slow, retrying...'));},25000);
     function cleanup(){delete window[cb];const s=document.getElementById('_jss');if(s)s.remove();clearTimeout(timer);}
     window[cb]=function(data){if(done)return;done=true;cleanup();if(data&&data.error){ss('error');rej(new Error(data.error));return;}ss('ok');res(data);};
     const s=document.createElement('script');s.id='_jss';s.src=url;
@@ -519,10 +519,23 @@ function apiFetch(params){
     document.head.appendChild(s);
   });
 }
-async function loadTickets(){
+async function loadTickets(retry){
   if(!cfg.apiUrl)return;
-  try{const d=await apiFetch({action:'getAll'});tickets=d.tickets||[];renderAll();}
-  catch(e){toast('&#9888; '+e.message,4000);}
+  try{
+    const d=await apiFetch({action:'getAll'});
+    tickets=d.tickets||[];
+    renderAll();
+    ss('ok');
+  }catch(e){
+    if(!retry){
+      // First failure — wait 2s and retry once (handles cold starts)
+      ss('syncing');
+      setTimeout(function(){loadTickets(true);},2000);
+    }else{
+      ss('error');
+      toast('&#9888; Connection issue — tap &#8635; to retry',4000);
+    }
+  }
 }
 
 // HELPERS
@@ -598,7 +611,18 @@ function buildCols(){
 function renderKanban(){
   const list=getFiltered(),cols=buildCols();
   document.getElementById('board').innerHTML=cols.map(col=>{
-    const ct=list.filter(t=>col.stages.includes(t.stage));
+    let ct;
+    if(col.label==='Blocked'){
+      // Blocked = any ticket with dev dependency OR stage dep/blocked
+      ct=list.filter(t=>(t.dep===true||t.dep==='true'||t.stage==='dep'||t.stage==='blocked')&&t.stage!=='done'&&!(t.done===true||t.done==='true'));
+    }else if(col.label==='Done'){
+      ct=list.filter(t=>(t.stage==='done'||t.done===true||t.done==='true'));
+    }else if(col.label==='Backlog'){
+      ct=list.filter(t=>col.stages.includes(t.stage)&&!(t.dep===true||t.dep==='true')&&!(t.done===true||t.done==='true'));
+    }else{
+      // In Progress — wip stages, not blocked, not done
+      ct=list.filter(t=>col.stages.includes(t.stage)&&!(t.dep===true||t.dep==='true')&&!(t.done===true||t.done==='true')&&t.stage!=='dep'&&t.stage!=='blocked');
+    }
     // Map col to its primary stage id for drop target
     const dropStage=col.dropStage||col.stages[0]||'todo';
     return '<div class="col" data-dropstage="'+dropStage+'" style="--colaccent:'+col.color+'">'
@@ -638,17 +662,27 @@ function initDragDrop(){
     col.addEventListener('drop',function(e){
       e.preventDefault();this.classList.remove('drag-over');
       if(!dragId)return;
-      const newStage=this.dataset.dropstage;
+      let newStage=this.dataset.dropstage;
+      const colLabel=this.querySelector('.collbl')?this.querySelector('.collbl').textContent.trim():'';
       const t=tickets.find(x=>x.id===dragId);
-      if(!t||t.stage===newStage)return;
+      if(!t)return;
       const oldStage=t.stage;
-      t.stage=newStage;
-      t.dep=(newStage==='dep');
-      if(newStage==='done')t.done=true;
-      else if(oldStage==='done')t.done=false;
+      // Determine target based on which column
+      if(colLabel==='Blocked'){
+        t.dep=true; t.stage='dep'; t.done=false;
+      }else if(colLabel==='Done'){
+        t.dep=false; t.stage='done'; t.done=true;
+      }else if(colLabel==='Backlog'){
+        t.dep=false; t.stage='todo'; t.done=false;
+      }else{
+        // In Progress
+        t.dep=false; t.done=false;
+        t.stage=(oldStage==='done'||oldStage==='dep'||oldStage==='blocked'||oldStage==='todo')?'sql':oldStage;
+      }
+      if(t.stage===oldStage&&String(t.dep)===String(t.dep)&&colLabel!=='Blocked'){renderAll();return;}
       renderAll();
-      toast('Moved to '+stgOf(newStage).label);
-      apiFetch({action:'update',id:dragId,stage:newStage,dep:String(t.dep),done:String(t.done)})
+      toast('Moved to '+colLabel);
+      apiFetch({action:'update',id:dragId,stage:t.stage,dep:String(t.dep),done:String(t.done)})
         .catch(()=>{ss('error');toast('Sync failed',3000);});
     });
   });
