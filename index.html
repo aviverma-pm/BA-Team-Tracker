@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0d0d11;--bg2:#13131a;--bg3:#1c1c26;
+  --bg:#0d0d11;--bg2:#13131a;--bg3:#1c1c26;--bg4:#16161f;
   --sf:rgba(255,255,255,0.04);--sf2:rgba(255,255,255,0.07);--sf3:rgba(255,255,255,0.12);
   --bd:rgba(255,255,255,0.08);--bd2:rgba(255,255,255,0.16);
   --tx:#e8e8f0;--tx2:rgba(232,232,240,0.55);--tx3:rgba(232,232,240,0.3);
@@ -15,6 +15,7 @@
   --red:#f87171;--yel:#fbbf24;--grn:#34d399;--pur:#a78bfa;--cyn:#22d3ee;--org:#fb923c;
   --r:13px;--rsm:8px;--rxs:6px;
   --sh:0 0 0 1px rgba(255,255,255,0.06),0 8px 32px rgba(0,0,0,0.55);
+  --sh2:0 0 0 1px rgba(255,255,255,0.08),0 16px 40px rgba(0,0,0,0.65);
   --shlg:0 0 0 1px rgba(255,255,255,0.08),0 24px 64px rgba(0,0,0,0.75);
   --mbg:#15151d;--tbg:#16161f;--cbg:rgba(255,255,255,0.025);
 }
@@ -28,7 +29,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .wrap{position:relative;z-index:1;max-width:1420px;margin:0 auto;padding:0 26px}
 
 /* HEADER */
-header{padding:12px 0 11px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);margin-bottom:20px;gap:12px;position:sticky;top:0;background:rgba(13,13,17,0.9);backdrop-filter:blur(20px);z-index:50}
+header{padding:0;display:flex;align-items:stretch;border-bottom:1px solid var(--bd);margin-bottom:20px;gap:0;position:sticky;top:0;background:rgba(13,13,17,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:50}
+.hd-inner{display:flex;align-items:center;justify-content:space-between;width:100%;padding:12px 26px;gap:12px}
 .hdl{display:flex;align-items:center;gap:14px}
 .logo-img{height:36px;width:auto;object-fit:contain;mix-blend-mode:lighten;filter:brightness(1.15) contrast(1.1)}
 .hddiv{width:1px;height:24px;background:var(--bd2);flex-shrink:0}
@@ -66,7 +68,7 @@ header{padding:12px 0 11px;display:flex;align-items:center;justify-content:space
 /* STATS */
 .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
 .sc{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:14px 15px;transition:all 0.18s}
-.sc:hover{background:var(--sf2);border-color:var(--bd2)}
+.sc:hover{background:var(--sf2);border-color:var(--bd2);transform:translateY(-1px)}
 .slbl{font-size:9px;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;font-weight:600}
 .sval{font-size:30px;font-weight:700;letter-spacing:-1.5px;line-height:1}
 .ssub{font-size:11px;color:var(--tx3);margin-top:3px}
@@ -198,14 +200,12 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:4px}
 @keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-/* DRAG & DROP */
+.ticket{animation:fi 0.18s ease}
 .ticket.dragging{opacity:0.35;transform:scale(0.97);box-shadow:none}
 .col.drag-over{background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.4);border-style:dashed}
 .col.drag-over .ecol{border-color:rgba(59,130,246,0.4);color:var(--blue)}
-/* DELETE CONFIRM */
 .del-confirm{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:10px;padding:12px 14px;margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .del-confirm span{font-size:12px;color:var(--red)}
-.ticket{animation:fi 0.18s ease}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);background:#1e1e2a;border:1px solid var(--bd2);border-radius:10px;padding:10px 18px;font-size:13px;color:var(--tx);box-shadow:var(--shlg);opacity:0;transition:all 0.25s;z-index:999;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
@@ -215,6 +215,7 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle}
 <div class="wrap">
 
 <header>
+<div class="wrap-inner">
   <div class="hdl">
     <img id="logo" class="logo-img" alt="Hotelogix">
     <div class="hddiv"></div>
@@ -228,6 +229,7 @@ td{padding:10px 14px;font-size:13px;vertical-align:middle}
     <div class="ibtn" id="btnCfg" title="Settings">&#9881;</div>
     <button class="btn btn-p" id="btnNew">+ New Ticket</button>
   </div>
+</div>
 </header>
 
 <div id="spbanner" style="display:none" class="spbanner">
@@ -451,11 +453,10 @@ const D = {
   apiUrl:'https://script.google.com/a/macros/hotelogix.com/s/AKfycbwzr21PU8xQNKkekLQfmdWtpcZyTqkCYsZ7vhmWqOo4anA4nZ1cdHlI0pxTvZbDoKyTdQ/exec',
   myName:'',
   team:[
-    {name:'Ananya',initials:'AN',color:'#3b82f6'},
-    {name:'Rohan', initials:'RO',color:'#f472b6'},
-    {name:'Priya', initials:'PR',color:'#34d399'},
-    {name:'Karan', initials:'KR',color:'#fbbf24'},
-    {name:'Sneha', initials:'SN',color:'#fb923c'},
+    {name:'Nihal',    initials:'NI',color:'#2563c7'},
+    {name:'Abhishek', initials:'AB',color:'#7c3aed'},
+    {name:'Harikewal',initials:'HK',color:'#0891b2'},
+    {name:'Avi',      initials:'AV',color:'#d97706'},
   ],
   stages:[
     {id:'todo',   label:'To Do',       color:'#6b7280'},
@@ -472,11 +473,11 @@ const D = {
 
 let cfg=loadCfg(), tickets=[], sprints=[], activity=[], fMode='all', fAv='', selStg='';
 
-function loadCfg(){try{const s=localStorage.getItem('hlx3');if(s)return Object.assign({},D,JSON.parse(s));}catch(e){}return Object.assign({},D);}
+function loadCfg(){try{const s=localStorage.getItem('hlx4');if(s)return Object.assign({},D,JSON.parse(s));}catch(e){}return Object.assign({},D);}
 function fmtIST(d){if(!d)return '';try{const dt=d instanceof Date?d:new Date(d);if(isNaN(dt))return String(d);return dt.toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'long',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});}catch(e){return String(d);}}
 function fmtDate(d){if(!d)return '';// Already formatted string from Apps Script e.g. "14 Jun 2025, 03:56 PM"
 return d;}
-function saveCfg(){localStorage.setItem('hlx3',JSON.stringify(cfg));}
+function saveCfg(){localStorage.setItem('hlx4',JSON.stringify(cfg));}
 function loadSpr(){try{const s=localStorage.getItem('hlxsp');if(s)return JSON.parse(s);}catch(e){}return [];}
 function saveSpr(){localStorage.setItem('hlxsp',JSON.stringify(sprints));}
 function loadAct(){try{const s=localStorage.getItem('hlxact');if(s)return JSON.parse(s);}catch(e){}return [];}
