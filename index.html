@@ -220,6 +220,60 @@ td{padding:12px 15px;font-size:13px;vertical-align:middle}
 .del-confirm span{font-size:12px;color:var(--red);font-weight:600}
 .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--tx);border-radius:11px;padding:11px 20px;font-size:13px;font-weight:600;color:#fff;box-shadow:var(--shlg);opacity:0;transition:all 0.25s;z-index:999;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* ===== MOBILE / RESPONSIVE ===== */
+@keyframes sheetUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+@media (max-width:860px){
+  .wrap{padding:0 14px}
+  .wrap-inner{padding:11px 14px;gap:9px}
+  .asm{display:none}
+  .avrow{display:none}
+  .hddiv{display:none}
+  #slbl{display:none}
+  .spill{padding:6px 8px}
+  .hdr{gap:7px}
+  .hdl{gap:10px}
+  .anm{font-size:15px}
+  .logo-img{height:30px}
+  .logo-pill{padding:6px 10px}
+  .btn{padding:8px 14px}
+  /* stats: 5 across -> 2 across */
+  .stats{grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}
+  .sval{font-size:27px}
+  .sc{padding:14px 15px}
+  /* sprint banner stacks */
+  .spbanner{flex-direction:column;align-items:stretch;gap:10px;padding:12px 14px}
+  .spinfo{flex-wrap:wrap;gap:8px}
+  .spprog{max-width:none}
+  /* toolbar: search drops to its own full-width line */
+  .toolbar>div:last-child{flex:1 1 100%;flex-wrap:wrap}
+  .srch{flex:1 1 100%}
+  .srch input{width:100%}
+  /* kanban: 4 columns -> horizontal swipe */
+  .board{display:flex;grid-template-columns:none;overflow-x:auto;gap:11px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:40px}
+  .col{flex:0 0 82vw;min-width:82vw;min-height:auto;scroll-snap-align:start}
+  /* table: horizontal scroll instead of squeeze */
+  .twrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{min-width:760px}
+  /* modals -> full-width bottom sheet */
+  .ov{padding:0;align-items:flex-end}
+  .modal,.modal-w{width:100%;max-width:100%;max-height:92vh;border-radius:22px 22px 0 0;padding:22px 18px 26px;animation:sheetUp 0.3s cubic-bezier(0.25,0.1,0.25,1)}
+  .frow,.frow3{grid-template-columns:1fr}
+  .crow{flex-wrap:wrap}
+  .crow #cwho{width:100%!important}
+  /* prevent iOS zoom-on-focus (needs >=16px) */
+  .fi,.fs,.fta,.srch input{font-size:16px}
+  .toast{white-space:normal;max-width:88vw;text-align:center}
+  .lbl-sm{display:none}
+}
+@media (max-width:430px){
+  .btn{padding:7px 12px;font-size:12px}
+  .ibtn{width:30px;height:30px}
+  .anm{font-size:14px}
+  .col{flex:0 0 86vw;min-width:86vw}
+  .sval{font-size:24px}
+  .mttl{font-size:17px}
+  .dg{grid-template-columns:1fr 1fr;gap:10px}
+}
 </style>
 </head>
 <body>
@@ -239,7 +293,7 @@ td{padding:12px 15px;font-size:13px;vertical-align:middle}
     <div class="ibtn" id="btnAct" title="Activity log">&#128203;</div>
     <div class="ibtn" id="btnSpr" title="Sprints">&#127939;</div>
     <div class="ibtn" id="btnCfg" title="Settings">&#9881;</div>
-    <button class="btn btn-p" id="btnNew">+ New Ticket</button>
+    <button class="btn btn-p" id="btnNew">+<span class="lbl-sm"> New Ticket</span></button>
   </div>
 </div>
 </header>
@@ -548,6 +602,13 @@ async function loadTickets(retry){
   try{
     const d=await apiFetch({action:'getAll'});
     tickets=d.tickets||[];
+    if(d.config){
+      let changed=false;
+      if(Array.isArray(d.config.team)&&d.config.team.length){cfg.team=d.config.team;changed=true;}
+      if(Array.isArray(d.config.stages)&&d.config.stages.length){cfg.stages=d.config.stages;changed=true;}
+      if(Array.isArray(d.config.types)&&d.config.types.length){cfg.types=d.config.types;changed=true;}
+      if(changed){saveCfg();applyConfig();}
+    }
     renderAll();
     ss('ok');
   }catch(e){
@@ -1120,8 +1181,13 @@ function saveSettings(){
   cfg.myName=me==='— No filter —'?'':me;
   document.getElementById('mchip').style.display=cfg.myName?'':'none';
   saveCfg();applyConfig();closeOv('ovCfg');renderAll();
-  toast('Settings saved &#10003;');
-  if(cfg.apiUrl)loadTickets();
+  if(cfg.apiUrl){
+    apiFetch({action:'updateConfig',team:JSON.stringify(cfg.team),stages:JSON.stringify(cfg.stages),types:JSON.stringify(cfg.types)})
+      .then(function(){toast('Settings saved &amp; team synced &#10003;');loadTickets();})
+      .catch(function(){toast('&#9888; Saved on this device — sync failed (check token)',4200);});
+  }else{
+    toast('Settings saved &#10003;');
+  }
 }
 
 // TOAST
