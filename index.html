@@ -277,10 +277,38 @@ td{padding:12px 15px;font-size:13px;vertical-align:middle}
 .tmbig{font-size:17px;font-weight:800;letter-spacing:-.5px}
 .attpill{display:inline-flex;gap:4px;font-size:11px;font-weight:700}
 .attpill span{padding:2px 7px;border-radius:6px}
+.wih-chk{width:20px;height:20px;flex-shrink:0;cursor:pointer;accent-color:#1a9c5b}
+.wih-tk{flex:0 0 116px;max-width:116px;padding:7px 8px;font-size:12px}
+.wih-item.done .fi{text-decoration:line-through;color:var(--tx3)}
+.tprog{display:flex;align-items:center;gap:9px;margin:2px 0 11px;font-size:12px;font-weight:800;color:var(--tx2)}
+.tpbar{flex:1;max-width:170px;height:7px;border-radius:6px;background:var(--bd);overflow:hidden}
+.tpfill{height:100%;background:#1a9c5b;border-radius:6px;transition:width .3s}
+.tchip{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:7px;background:#fff;border:1px solid var(--bd);color:var(--tx2)}
+.tchip.done{background:#dcfff1;border-color:#bfefd6;color:#13794e;text-decoration:line-through}
+.tchip .tkref{font-size:9px;font-weight:800;color:#3b82f6;text-decoration:none}
+.tmtbl tr.clk{cursor:pointer}
+.tmtbl tr.clk:hover td{background:#f0f6ff}
+.tmlink{color:#3b82f6;font-weight:800;cursor:pointer}
+.teamtabs{display:flex;gap:4px;margin-bottom:15px;border-bottom:1px solid var(--bd)}
+.teamtab{padding:8px 15px;font-size:12.5px;font-weight:700;color:var(--tx3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.teamtab.on{color:var(--blue);border-bottom-color:var(--blue)}
+.dvbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.dvcard{background:var(--bg3);border:1px solid var(--bd);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.dvhd{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.dvav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;cursor:pointer}
+.dvnm{font-weight:800;font-size:14px;cursor:pointer}
+.dvmeta{margin-left:auto;font-size:11px;font-weight:800;color:var(--tx3)}
+.dvtask{display:flex;align-items:center;gap:9px;padding:6px 2px;font-size:13px;border-bottom:1px solid var(--bd)}
+.dvtask:last-child{border-bottom:none}
+.dvtask.done{color:var(--tx3)}
+.dvtask.done .tx{text-decoration:line-through}
+.dvtask .bx{font-size:14px;flex-shrink:0}
+.dvtxt{font-size:12.5px;color:var(--tx2);margin-top:8px;line-height:1.5}
+.dvempty{font-size:12px;color:var(--tx3);font-style:italic}
 @media (max-width:860px){
   .pstats{grid-template-columns:repeat(2,1fr)}
   .tmtblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .tmtbl{min-width:600px}
+  .tmtbl{min-width:640px}
 }
 
 /* ===== MOBILE / RESPONSIVE ===== */
@@ -448,9 +476,11 @@ td{padding:12px 15px;font-size:13px;vertical-align:middle}
       </div>
     </div>
     <div class="daysec">
-      <h4>&#128221; Work in Hand — planned for today</h4>
+      <h4>&#128221; Work in Hand &mdash; tasks for today</h4>
+      <div class="tprog" id="taskProg"></div>
       <div class="wih-list" id="wihList"></div>
-      <button class="addb" id="wihAdd">+ Add item</button>
+      <div id="wihCarry" style="display:none;font-size:12px;color:var(--tx2);margin:9px 0;background:#fff8ec;border:1px solid #f3e2c0;border-radius:8px;padding:8px 11px"></div>
+      <button class="addb" id="wihAdd">+ Add task</button>
       <button class="btn btn-g bsm" id="btnSavePlan" style="margin-top:11px">&#128190; Save Plan &amp; Notify</button>
     </div>
     <div class="daysec">
@@ -473,14 +503,24 @@ td{padding:12px 15px;font-size:13px;vertical-align:middle}
 <div class="ov" id="ovTeam">
 <div class="modal modal-w">
   <div class="mx" id="mxTeam">&#x2715;</div>
-  <div class="mttl">&#128101; Team Efficiency</div>
-  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+  <div class="mttl">&#128101; Team Dashboard</div>
+  <div class="teamtabs" id="teamTabs">
+    <div class="teamtab on" data-tt="eff">&#128202; Efficiency</div>
+    <div class="teamtab" data-tt="day">&#128197; Daily Work-in-Hand</div>
+  </div>
+  <div id="effControls" style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:16px">
     <div class="segday" id="teamPeriod">
       <button data-pd="day" class="on">Today</button>
       <button data-pd="week">This Week</button>
       <button data-pd="month">This Month</button>
     </div>
     <button class="btn btn-g bsm" id="btnTeamXls">&#11015; Excel</button>
+  </div>
+  <div id="dayControls" style="display:none" class="dvbar">
+    <button class="btn btn-g bsm" id="dvPrev">&#8249;</button>
+    <input type="date" class="fi" id="dvDate" style="max-width:170px">
+    <button class="btn btn-g bsm" id="dvNext">&#8250;</button>
+    <button class="btn btn-g bsm" id="dvToday">Today</button>
   </div>
   <div id="teamBody"></div>
 </div>
@@ -681,7 +721,7 @@ const D = {
   types:['SQL Query','Jinja Templating','Filter Setup','Debug / Report Fix','L4 Resolution','Data Authenticity Check','Dev Dependency Request','Dashboard Build','Comparative Analysis','Other'],
 };
 
-let cfg=loadCfg(), tickets=[], sprints=[], activity=[], fMode='all', fAv='', selStg='', dailyLogs=[], profName='', profTab='timeline', teamPeriod='day';
+let cfg=loadCfg(), tickets=[], sprints=[], activity=[], fMode='all', fAv='', selStg='', dailyLogs=[], profName='', profTab='timeline', teamPeriod='day', teamTab='eff';
 
 function loadCfg(){try{const s=localStorage.getItem('hlx4');if(s)return Object.assign({},D,JSON.parse(s));}catch(e){}return Object.assign({},D);}
 function fmtIST(d){if(!d)return '';try{const dt=d instanceof Date?d:new Date(d);if(isNaN(dt))return String(d);return dt.toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'long',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});}catch(e){return String(d);}}
@@ -1094,7 +1134,7 @@ function openDetail(id){
 async function markDone(id,isDone){
   const t=tickets.find(x=>x.id===id);if(!t)return;
   t.done=isDone;t.stage=isDone?'done':(t.stage==='done'?'review':t.stage);
-  if(isDone){t.doneAt=fmtIST(new Date());const c=parseIST(t.created),e=parseIST(t.doneAt);t.tatDays=(c&&e)?Math.round((e-c)/86400000*100)/100:'';}
+  if(isDone){t.doneAt=fmtIST(new Date());const c=parseIST(t.created),e=parseIST(t.doneAt);t.tatDays=(c&&e)?Math.round((e-c)/86400000*100)/100:'';flipTasksLocal(id);}
   else{t.doneAt='';t.tatDays='';}
   closeOv('ovDetail');renderAll();
   logAct((isDone?'&#10003; Closed: ':'&#8617; Reopened: ')+t.title,isDone?'#34d399':'#fbbf24');
@@ -1108,7 +1148,7 @@ async function moveStage(id,stage){
   t.dep=(stage==='dep');
   if(stage==='done') t.done=true;
   else if(stage!=='review') t.done=false;
-  if(t.done){if(!t.doneAt){t.doneAt=fmtIST(new Date());}const c=parseIST(t.created),e=parseIST(t.doneAt);t.tatDays=(c&&e)?Math.round((e-c)/86400000*100)/100:'';}
+  if(t.done){if(!t.doneAt){t.doneAt=fmtIST(new Date());}const c=parseIST(t.created),e=parseIST(t.doneAt);t.tatDays=(c&&e)?Math.round((e-c)/86400000*100)/100:'';flipTasksLocal(id);}
   else{t.doneAt='';t.tatDays='';}
   closeOv('ovDetail');renderAll();
   const stgLabel=stgOf(stage).label;
@@ -1557,6 +1597,22 @@ function periodRange(kind){const to=new Date();let from=new Date();from.setHours
   return {from:from,to:to,fromStr:fmtYMD(from),toStr:fmtYMD(to)};}
 function periodLabel(k){return k==='day'?'today':k==='week'?'this week':'this month';}
 function currentOngoing(member){return tickets.filter(t=>t.assignee===member&&!isDone(t)).map(t=>({id:t.id,title:t.title||'',stage:stageLabelOf(t)}));}
+function normPlan(plan){return (plan||[]).map(function(it){if(typeof it==='string')return {text:it,done:false,ticketId:''};return {text:(it&&it.text)||'',done:!!(it&&it.done),ticketId:(it&&it.ticketId)||'',doneVia:(it&&it.doneVia)||''};}).filter(function(it){return it.text||it.ticketId;});}
+function taskCounts(plan){const t=normPlan(plan);return {planned:t.length,done:t.filter(x=>x.done).length};}
+function openTickets(){return tickets.filter(t=>!isDone(t));}
+function ticketOptions(member,sel){
+  const open=openTickets();
+  const mine=open.filter(t=>t.assignee===member), other=open.filter(t=>t.assignee!==member);
+  const opt=t=>'<option value="'+t.id+'"'+(t.id===sel?' selected':'')+'>'+t.id+' \u00b7 '+escH((t.title||'').slice(0,38))+'</option>';
+  let h='<option value="">\u2014 link ticket \u2014</option>';
+  if(mine.length)h+='<optgroup label="My open reports">'+mine.map(opt).join('')+'</optgroup>';
+  if(other.length)h+='<optgroup label="Other open reports">'+other.map(opt).join('')+'</optgroup>';
+  // keep a stale linked id selectable even if it's now done/removed
+  if(sel&&!open.some(t=>t.id===sel))h+='<option value="'+sel+'" selected>'+sel+' (done/closed)</option>';
+  return h;
+}
+function ticketTitle(id){const t=tickets.find(x=>x.id===id);return t?(t.title||id):id;}
+function flipTasksLocal(ticketId){let n=0;dailyLogs.forEach(l=>{const p=normPlan(l.plan);let ch=false;p.forEach(t=>{if(t.ticketId===ticketId&&!t.done){t.done=true;t.doneVia='ticket';ch=true;n++;}});if(ch)l.plan=p;});return n;}
 function memberStats(member,kind){
   const r=periodRange(kind);
   const mine=tickets.filter(t=>t.assignee===member);
@@ -1566,7 +1622,8 @@ function memberStats(member,kind){
   const avg=tats.length?tats.reduce((a,b)=>a+b,0)/tats.length:null;
   const logs=dailyLogs.filter(l=>l.member===member&&l.date>=r.fromStr&&l.date<=r.toStr);
   const att={office:0,wfh:0,absent:0};logs.forEach(l=>{att[l.presence]=(att[l.presence]||0)+1;});
-  return {completed:completed.length,inprog:inprog.length,avg:avg,att:att,planDays:logs.filter(l=>(l.plan||[]).filter(Boolean).length).length,total:mine.length};
+  let tPlan=0,tDone=0;logs.forEach(l=>{const c=taskCounts(l.plan);tPlan+=c.planned;tDone+=c.done;});
+  return {completed:completed.length,inprog:inprog.length,avg:avg,att:att,planDays:logs.filter(l=>taskCounts(l.plan).planned).length,total:mine.length,tasksPlanned:tPlan,tasksDone:tDone};
 }
 
 // ---- My Day ----
@@ -1588,22 +1645,42 @@ function renderDayIdentity(){
 function loadDayInto(member,date){
   const log=logFor(member,date)||{presence:'office',plan:[],doneText:'',pendingText:'',blockers:''};
   document.querySelectorAll('#dayPresence .prbtn').forEach(b=>b.classList.toggle('on',b.dataset.pr===(log.presence||'office')));
-  const items=(log.plan&&log.plan.filter(Boolean).length)?log.plan.filter(Boolean):[''];
-  renderWih(items);
+  const items=normPlan(log.plan);
+  renderWih(items.length?items:[{text:'',done:false,ticketId:''}]);
   document.getElementById('dayDone').value=log.doneText||'';
   document.getElementById('dayPending').value=log.pendingText||'';
   document.getElementById('dayBlockers').value=log.blockers||'';
+  renderCarry(member,date);
+}
+function renderCarry(member,date){
+  const box=document.getElementById('wihCarry');if(!box)return;
+  const prev=dailyLogs.filter(l=>l.member===member&&l.date<date).sort((a,b)=>String(b.date).localeCompare(String(a.date)))[0];
+  const open=prev?normPlan(prev.plan).filter(t=>!t.done):[];
+  if(open.length){box.style.display='';box.innerHTML='&#8631; '+open.length+' unfinished task(s) from '+niceDate(prev.date)+' \u2014 <span class="tmlink" id="carryBtn">pull them in</span>';
+    document.getElementById('carryBtn').onclick=function(){const cur=collectWih().filter(t=>t.text||t.ticketId);renderWih(cur.concat(open.map(t=>({text:t.text,done:false,ticketId:t.ticketId}))));box.style.display='none';};
+  }else{box.style.display='none';}
 }
 function renderWih(items){
-  document.getElementById('wihList').innerHTML=items.map((t,i)=>'<div class="wih-item"><input class="fi" value="'+String(t).replace(/"/g,'&quot;')+'" placeholder="Task / report you\u2019re working on"><button class="wih-rm" data-i="'+i+'">\u2715</button></div>').join('');
-  document.querySelectorAll('#wihList .wih-rm').forEach(b=>b.addEventListener('click',function(){const it=collectWih();it.splice(+this.dataset.i,1);renderWih(it.length?it:['']);}));
+  document.getElementById('wihList').innerHTML=items.map((t,i)=>{
+    const o=(typeof t==='string')?{text:t,done:false,ticketId:''}:t;
+    return '<div class="wih-item'+(o.done?' done':'')+'">'+
+      '<input type="checkbox" class="wih-chk" data-i="'+i+'"'+(o.done?' checked':'')+'>'+
+      '<input class="fi wih-txt" value="'+String(o.text||'').replace(/"/g,'&quot;')+'" placeholder="Task you\u2019re working on">'+
+      '<select class="fs wih-tk">'+ticketOptions(cfg.myName,o.ticketId)+'</select>'+
+      '<button class="wih-rm" data-i="'+i+'">\u2715</button></div>';
+  }).join('');
+  document.querySelectorAll('#wihList .wih-rm').forEach(b=>b.addEventListener('click',function(){const it=collectWih();it.splice(+this.dataset.i,1);renderWih(it.length?it:[{text:'',done:false,ticketId:''}]);}));
+  document.querySelectorAll('#wihList .wih-chk').forEach(b=>b.addEventListener('change',function(){const it=collectWih();renderWih(it);updateTaskProg();}));
+  document.querySelectorAll('#wihList .wih-tk').forEach(s=>s.addEventListener('change',function(){const row=this.closest('.wih-item');const txt=row.querySelector('.wih-txt');if(this.value&&!txt.value.trim())txt.value=ticketTitle(this.value);}));
+  updateTaskProg();
 }
-function collectWih(){return Array.from(document.querySelectorAll('#wihList input')).map(i=>i.value);}
+function collectWih(){return Array.from(document.querySelectorAll('#wihList .wih-item')).map(row=>({text:row.querySelector('.wih-txt').value,done:row.querySelector('.wih-chk').checked,ticketId:row.querySelector('.wih-tk').value}));}
+function updateTaskProg(){const it=collectWih().filter(t=>t.text||t.ticketId);const done=it.filter(t=>t.done).length;const box=document.getElementById('taskProg');if(!box)return;if(!it.length){box.innerHTML='';return;}box.innerHTML='<span>'+done+' / '+it.length+' done</span><div class="tpbar"><div class="tpfill" style="width:'+Math.round(done/it.length*100)+'%"></div></div>';}
 function getDayPresence(){const on=document.querySelector('#dayPresence .prbtn.on');return on?on.dataset.pr:'office';}
 async function saveDay(phase){
   const member=cfg.myName,date=document.getElementById('dayDate').value||todayStr();
   const presence=getDayPresence();
-  const plan=collectWih().map(s=>s.trim()).filter(Boolean);
+  const plan=collectWih().map(t=>({text:(t.text||'').trim(),done:!!t.done,ticketId:t.ticketId||''})).filter(t=>t.text||t.ticketId);
   const ongoing=currentOngoing(member);
   const payload={action:'saveDailyLog',member:member,date:date,presence:presence,phase:phase,plan:JSON.stringify(plan),ongoing:JSON.stringify(ongoing)};
   if(phase==='end'){payload.doneText=document.getElementById('dayDone').value;payload.pendingText=document.getElementById('dayPending').value;payload.blockers=document.getElementById('dayBlockers').value;}
@@ -1618,7 +1695,7 @@ async function saveDay(phase){
 }
 
 // ---- Profile ----
-function openProfile(name){profName=name;profTab='timeline';renderProfile();openOv('ovProfile');}
+function openProfile(name,tab){profName=name;profTab=tab||'timeline';renderProfile();openOv('ovProfile');}
 function renderProfile(){
   const m=tmOf(profName);
   const today=logFor(profName,todayStr());
@@ -1642,10 +1719,11 @@ function profTimeline(){
   const logs=dailyLogs.filter(l=>l.member===profName).slice().sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,30);
   if(!logs.length)return '<div class="ecol" style="margin:0">No daily logs yet for '+escH(profName)+'.</div>';
   return '<div class="tl">'+logs.map(l=>{
-    const pm=presMeta(l.presence),plan=(l.plan||[]).filter(Boolean),ong=(l.ongoing||[]);
+    const pm=presMeta(l.presence),plan=normPlan(l.plan),ong=(l.ongoing||[]);
+    const dn=plan.filter(t=>t.done).length;
     return '<div class="tld"><div class="tldh"><div class="tldate">'+niceDate(l.date)+'</div><span class="pbadge pb-'+pm.c+'">'+pm.e+' '+pm.l+'</span></div>'+
-      (plan.length?'<div class="tlk">Work in hand</div><div class="tlchips">'+plan.map(p=>'<span class="tlchip">'+escH(p)+'</span>').join('')+'</div>':'')+
-      (ong.length?'<div class="tlk">Ongoing reports</div><div class="tlchips">'+ong.map(o=>'<span class="tlchip">'+escH(o.id)+'</span>').join('')+'</div>':'')+
+      (plan.length?'<div class="tlk">Work in hand \u2014 '+dn+'/'+plan.length+' done</div><div class="tlchips">'+plan.map(p=>'<span class="tchip'+(p.done?' done':'')+'">'+(p.done?'\u2713 ':'')+escH(p.text)+(p.ticketId?' <span class="tkref">'+escH(p.ticketId)+'</span>':'')+'</span>').join('')+'</div>':'')+
+      (ong.length?'<div class="tlk">Ongoing reports</div><div class="tlchips">'+ong.map(o=>'<span class="tchip">'+escH(o.id)+'</span>').join('')+'</div>':'')+
       (l.doneText?'<div class="tlk">Completed</div><div style="font-size:12.5px;color:var(--tx2);line-height:1.55">'+escH(l.doneText).replace(/\n/g,'<br>')+'</div>':'')+
       (l.pendingText?'<div class="tlk">Pending</div><div style="font-size:12.5px;color:var(--tx2);line-height:1.55">'+escH(l.pendingText).replace(/\n/g,'<br>')+'</div>':'')+
       (l.blockers?'<div class="tlk" style="color:#b45309">Blockers</div><div style="font-size:12.5px;color:#b45309;line-height:1.55">'+escH(l.blockers)+'</div>':'')+
@@ -1661,44 +1739,81 @@ function profReports(){
   return (grp('In Progress',ip)+grp('Blocked',bl)+grp('Recently Completed',dn))||'<div class="ecol" style="margin:0">No reports assigned.</div>';
 }
 
-// ---- Team Efficiency ----
-function openTeam(){teamPeriod='day';renderTeam();openOv('ovTeam');}
+// ---- Team Dashboard ----
+function shiftDate(str,delta){const a=String(str).split('-').map(Number);const d=new Date(a[0],a[1]-1,a[2]);d.setDate(d.getDate()+delta);return fmtYMD(d);}
+function openTeam(){teamPeriod='day';setTeamTab('eff');openOv('ovTeam');}
+function setTeamTab(tt){
+  teamTab=tt;
+  document.querySelectorAll('#teamTabs .teamtab').forEach(b=>b.classList.toggle('on',b.dataset.tt===tt));
+  document.getElementById('effControls').style.display=tt==='eff'?'':'none';
+  document.getElementById('dayControls').style.display=tt==='day'?'':'none';
+  if(tt==='eff'){renderTeam();}
+  else{const d=document.getElementById('dvDate');if(!d.value)d.value=todayStr();renderTeamDay();}
+}
 function renderTeam(){
   document.querySelectorAll('#teamPeriod button').forEach(b=>b.classList.toggle('on',b.dataset.pd===teamPeriod));
   const rows=cfg.team.map(m=>({m:m,s:memberStats(m.name,teamPeriod)}));
   const maxDone=Math.max(1,Math.max.apply(null,rows.map(r=>r.s.completed)));
-  let html='<div class="tmtblwrap"><table class="tmtbl"><thead><tr><th>Member</th><th>Completed</th><th>In Progress</th><th>Avg TAT</th><th>Attendance</th><th>Plan days</th></tr></thead><tbody>';
-  rows.forEach(r=>{const a=r.s.att;
-    html+='<tr><td><div class="tmname"><div class="tmav" style="background:'+r.m.color+'22;color:'+r.m.color+'">'+r.m.initials+'</div>'+escH(r.m.name)+'</div></td>'+
-      '<td><span class="tmbig">'+r.s.completed+'</span><span style="display:inline-block;height:6px;border-radius:6px;background:'+r.m.color+';width:'+Math.round(r.s.completed/maxDone*54)+'px;vertical-align:middle;margin-left:7px"></span></td>'+
-      '<td>'+r.s.inprog+'</td><td>'+(r.s.avg!==null?r.s.avg.toFixed(1)+'d':'\u2014')+'</td>'+
-      '<td><span class="attpill"><span style="background:#dcfff1;color:#13794e">\u{1F3E2} '+a.office+'</span><span style="background:#d7f3fb;color:#0b6a82">\u{1F3E0} '+a.wfh+'</span><span style="background:#ffeceb;color:#b3271e">\u{1F3D6} '+a.absent+'</span></span></td>'+
-      '<td>'+r.s.planDays+'</td></tr>';
+  let html='<div class="tmtblwrap"><table class="tmtbl"><thead><tr><th>Member</th><th>Completed</th><th>In Progress</th><th>Tasks done</th><th>Avg TAT</th><th>Attendance</th></tr></thead><tbody>';
+  rows.forEach(r=>{const a=r.s.att;const pct=r.s.tasksPlanned?Math.round(r.s.tasksDone/r.s.tasksPlanned*100):0;
+    html+='<tr class="clk" data-prof="'+escH(r.m.name)+'"><td><div class="tmname"><div class="tmav" style="background:'+r.m.color+'22;color:'+r.m.color+'">'+r.m.initials+'</div>'+escH(r.m.name)+'</div></td>'+
+      '<td><span class="tmbig">'+r.s.completed+'</span><span style="display:inline-block;height:6px;border-radius:6px;background:'+r.m.color+';width:'+Math.round(r.s.completed/maxDone*48)+'px;vertical-align:middle;margin-left:7px"></span></td>'+
+      '<td><span class="tmlink" data-ip="'+escH(r.m.name)+'">'+r.s.inprog+' \u203a</span></td>'+
+      '<td>'+(r.s.tasksPlanned?'<b>'+r.s.tasksDone+'</b>/'+r.s.tasksPlanned+' \u00b7 '+pct+'%':'\u2014')+'</td>'+
+      '<td>'+(r.s.avg!==null?r.s.avg.toFixed(1)+'d':'\u2014')+'</td>'+
+      '<td><span class="attpill"><span style="background:#dcfff1;color:#13794e">\u{1F3E2} '+a.office+'</span><span style="background:#d7f3fb;color:#0b6a82">\u{1F3E0} '+a.wfh+'</span><span style="background:#ffeceb;color:#b3271e">\u{1F3D6} '+a.absent+'</span></span></td></tr>';
   });
   const tot=rows.reduce((s,r)=>s+r.s.completed,0);
-  html+='</tbody></table></div><div style="margin-top:14px;font-size:12px;color:var(--tx3)">Team completed <b style="color:var(--tx)">'+tot+'</b> report(s) '+periodLabel(teamPeriod)+'. Tap a member\u2019s avatar in the header to open their full profile.</div>';
+  html+='</tbody></table></div><div style="margin-top:14px;font-size:12px;color:var(--tx3)">Team completed <b style="color:var(--tx)">'+tot+'</b> report(s) '+periodLabel(teamPeriod)+'. Click a row for the member\u2019s profile, or the In-Progress count to see those reports.</div>';
   document.getElementById('teamBody').innerHTML=html;
+  document.querySelectorAll('#teamBody tr.clk').forEach(el=>el.addEventListener('click',function(){closeOv('ovTeam');openProfile(this.dataset.prof);}));
+  document.querySelectorAll('#teamBody .tmlink').forEach(el=>el.addEventListener('click',function(e){e.stopPropagation();closeOv('ovTeam');openProfile(this.dataset.ip,'reports');}));
+}
+function renderTeamDay(){
+  const date=document.getElementById('dvDate').value||todayStr();
+  let html='<div style="font-size:13px;font-weight:800;margin-bottom:13px;color:var(--tx)">'+niceDate(date)+'  \u00b7  '+date+'</div>';
+  let any=false;
+  cfg.team.forEach(m=>{
+    const log=logFor(m.name,date);
+    const plan=log?normPlan(log.plan):[];
+    const pm=log?presMeta(log.presence):null;
+    const dn=plan.filter(t=>t.done).length;
+    html+='<div class="dvcard"><div class="dvhd"><div class="dvav" data-prof="'+escH(m.name)+'" style="background:'+m.color+'22;color:'+m.color+'">'+m.initials+'</div>'+
+      '<div class="dvnm" data-prof="'+escH(m.name)+'">'+escH(m.name)+'</div>'+
+      (pm?'<span class="pbadge pb-'+pm.c+'">'+pm.e+' '+pm.l+'</span>':'<span class="dvempty">no log</span>')+
+      (plan.length?'<span class="dvmeta">'+dn+'/'+plan.length+' done</span>':'')+'</div>';
+    if(plan.length){
+      html+=plan.map(t=>'<div class="dvtask'+(t.done?' done':'')+'"><span class="bx">'+(t.done?'\u2705':'\u25FB')+'</span><span class="tx">'+escH(t.text)+'</span>'+(t.ticketId?'<span class="tchip"><span class="tkref">'+escH(t.ticketId)+'</span></span>':'')+'</div>').join('');
+    }else if(log){html+='<div class="dvempty">No tasks listed'+(log.presence==='absent'?' \u2014 marked absent':'')+'.</div>';}
+    else{html+='<div class="dvempty">Nothing logged for this date.</div>';}
+    if(log&&(log.doneText||log.pendingText)){html+='<div class="dvtxt">'+(log.doneText?'<b>Done:</b> '+escH(log.doneText)+'<br>':'')+(log.pendingText?'<b>Left:</b> '+escH(log.pendingText):'')+'</div>';}
+    html+='</div>';
+    if(log)any=true;
+  });
+  if(!any)html+='<div class="ecol" style="margin:0">No daily logs for '+niceDate(date)+' yet.</div>';
+  document.getElementById('teamBody').innerHTML=html;
+  document.querySelectorAll('#teamBody [data-prof]').forEach(el=>el.addEventListener('click',function(){closeOv('ovTeam');openProfile(this.dataset.prof);}));
 }
 function exportTeamXls(){
   if(typeof XLSX==='undefined'){toast('&#10007; Excel library not loaded',3500);return;}
   const rows=cfg.team.map(m=>({m:m,s:memberStats(m.name,teamPeriod)}));
   const wb=XLSX.utils.book_new();
-  const head=['Member','Completed','In Progress','Avg TAT (d)','Office','WFH','Absent','Plan Days','Reports Owned'];
+  const head=['Member','Completed','In Progress','Tasks Done','Tasks Planned','Avg TAT (d)','Office','WFH','Absent','Reports Owned'];
   const ws={};head.forEach((h,c)=>_put(ws,0,c,h,_hdr()));
   rows.forEach((r,i)=>{const rr=i+1,bg=i%2?'F7F9FC':'FFFFFF';
-    [r.m.name,r.s.completed,r.s.inprog,r.s.avg!==null?Math.round(r.s.avg*100)/100:'',r.s.att.office,r.s.att.wfh,r.s.att.absent,r.s.planDays,r.s.total]
-      .forEach((val,c)=>_put(ws,rr,c,val,_cell(c===0?'left':'center',bg),c===3?'0.0':null));});
+    [r.m.name,r.s.completed,r.s.inprog,r.s.tasksDone,r.s.tasksPlanned,r.s.avg!==null?Math.round(r.s.avg*100)/100:'',r.s.att.office,r.s.att.wfh,r.s.att.absent,r.s.total]
+      .forEach((val,c)=>_put(ws,rr,c,val,_cell(c===0?'left':'center',bg),c===5?'0.0':null));});
   ws['!ref']=XLSX.utils.encode_range({s:{r:0,c:0},e:{r:rows.length,c:head.length-1}});
-  ws['!cols']=[{wch:14},{wch:11},{wch:12},{wch:12},{wch:8},{wch:7},{wch:8},{wch:11},{wch:14}];
+  ws['!cols']=[{wch:14},{wch:11},{wch:12},{wch:11},{wch:13},{wch:12},{wch:8},{wch:7},{wch:8},{wch:14}];
   XLSX.utils.book_append_sheet(wb,ws,'Efficiency');
   const logs=dailyLogs.slice().sort((a,b)=>String(b.date).localeCompare(String(a.date)));
-  const lh=['Date','Member','Presence','Work in Hand','Completed','Pending','Blockers'];
+  const lh=['Date','Member','Presence','Tasks Done','Tasks Planned','Work in Hand','Completed','Pending','Blockers'];
   const ls={};lh.forEach((h,c)=>_put(ls,0,c,h,_hdr()));
-  logs.forEach((l,i)=>{const rr=i+1,bg=i%2?'F7F9FC':'FFFFFF';
-    [l.date,l.member,presMeta(l.presence).l,(l.plan||[]).filter(Boolean).join('; '),l.doneText||'',l.pendingText||'',l.blockers||'']
-      .forEach((val,c)=>_put(ls,rr,c,val,_cell(c<3?'center':'left',bg)));});
+  logs.forEach((l,i)=>{const rr=i+1,bg=i%2?'F7F9FC':'FFFFFF';const tk=normPlan(l.plan);
+    [l.date,l.member,presMeta(l.presence).l,tk.filter(t=>t.done).length,tk.length,tk.map(t=>(t.done?'\u2713 ':'\u25FB ')+t.text+(t.ticketId?' ['+t.ticketId+']':'')).join('; '),l.doneText||'',l.pendingText||'',l.blockers||'']
+      .forEach((val,c)=>_put(ls,rr,c,val,_cell(c<5?'center':'left',bg)));});
   ls['!ref']=XLSX.utils.encode_range({s:{r:0,c:0},e:{r:logs.length,c:lh.length-1}});
-  ls['!cols']=[{wch:12},{wch:12},{wch:13},{wch:40},{wch:40},{wch:34},{wch:22}];
+  ls['!cols']=[{wch:12},{wch:12},{wch:13},{wch:10},{wch:12},{wch:46},{wch:36},{wch:30},{wch:20}];
   XLSX.utils.book_append_sheet(wb,ls,'Daily Logs');
   XLSX.writeFile(wb,'Team_Efficiency_'+teamPeriod+'_'+todayStr()+'.xlsx');
   toast('&#10003; Team report downloaded');
@@ -1723,12 +1838,17 @@ document.getElementById('btnDay').addEventListener('click',openDayModal);
 document.getElementById('btnTeam').addEventListener('click',openTeam);
 document.getElementById('mxDay').addEventListener('click',function(){closeOv('ovDay');});
 document.getElementById('mxTeam').addEventListener('click',function(){closeOv('ovTeam');});
-document.getElementById('wihAdd').addEventListener('click',function(){renderWih(collectWih().concat(['']));});
+document.getElementById('wihAdd').addEventListener('click',function(){renderWih(collectWih().concat([{text:'',done:false,ticketId:''}]));});
 document.getElementById('btnSavePlan').addEventListener('click',function(){saveDay('plan');});
 document.getElementById('btnSubmitEnd').addEventListener('click',function(){saveDay('end');});
 document.getElementById('dayDate').addEventListener('change',function(){if(cfg.myName)loadDayInto(cfg.myName,this.value);});
 document.querySelectorAll('#dayPresence .prbtn').forEach(b=>b.addEventListener('click',function(){document.querySelectorAll('#dayPresence .prbtn').forEach(x=>x.classList.remove('on'));this.classList.add('on');}));
+document.querySelectorAll('#teamTabs .teamtab').forEach(b=>b.addEventListener('click',function(){setTeamTab(this.dataset.tt);}));
 document.querySelectorAll('#teamPeriod button').forEach(b=>b.addEventListener('click',function(){teamPeriod=this.dataset.pd;renderTeam();}));
+document.getElementById('dvDate').addEventListener('change',renderTeamDay);
+document.getElementById('dvPrev').addEventListener('click',function(){const d=document.getElementById('dvDate');d.value=shiftDate(d.value||todayStr(),-1);renderTeamDay();});
+document.getElementById('dvNext').addEventListener('click',function(){const d=document.getElementById('dvDate');d.value=shiftDate(d.value||todayStr(),1);renderTeamDay();});
+document.getElementById('dvToday').addEventListener('click',function(){document.getElementById('dvDate').value=todayStr();renderTeamDay();});
 document.getElementById('btnTeamXls').addEventListener('click',exportTeamXls);
 document.getElementById('btnCreate').addEventListener('click',createTicket);
 document.getElementById('btnCrSp').addEventListener('click',createSpr);
