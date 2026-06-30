@@ -223,6 +223,66 @@ td{padding:12px 15px;font-size:13px;vertical-align:middle}
 .del-confirm span{font-size:12px;color:var(--red);font-weight:600}
 .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--tx);border-radius:11px;padding:11px 20px;font-size:13px;font-weight:600;color:#fff;box-shadow:var(--shlg);opacity:0;transition:all 0.25s;z-index:999;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* ===== DAILY / PROFILE / TEAM ===== */
+.btn-nav{background:#142e50;color:#fff}.btn-nav:hover{background:#1e3e66;color:#fff}
+.prtog{display:flex;gap:8px;flex-wrap:wrap}
+.prbtn{flex:1;min-width:92px;display:flex;align-items:center;justify-content:center;gap:6px;padding:11px 10px;border-radius:12px;border:2px solid var(--bd);background:var(--bg3);color:var(--tx2);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.prbtn:hover{border-color:var(--bd2)}
+.prbtn.on{color:#fff}
+.prbtn.on.office{background:#1a9c5b;border-color:#1a9c5b}
+.prbtn.on.wfh{background:#0891b2;border-color:#0891b2}
+.prbtn.on.absent{background:#c0392b;border-color:#c0392b}
+.wih-list{display:flex;flex-direction:column;gap:7px;margin-top:4px}
+.wih-item{display:flex;gap:7px;align-items:center}
+.wih-item .fi{flex:1}
+.wih-rm{width:34px;height:34px;flex-shrink:0;border-radius:9px;border:none;background:#ffeceb;color:var(--red);cursor:pointer;font-size:12px}
+.wih-rm:hover{background:#ffd5d2}
+.daysec{background:var(--bg3);border:1px solid var(--bd);border-radius:14px;padding:15px 16px;margin-bottom:13px}
+.daysec h4{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--tx2);margin-bottom:11px;display:flex;align-items:center;gap:6px}
+.pbadge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+.pb-office{background:#dcfff1;color:#13794e}.pb-wfh{background:#d7f3fb;color:#0b6a82}.pb-absent{background:#ffeceb;color:#b3271e}
+.profhd{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.profav{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.profnm{font-size:20px;font-weight:800;letter-spacing:-.4px}
+.profsub{font-size:12px;color:var(--tx3);margin-top:4px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pstats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.pstat{background:var(--bg3);border:1px solid var(--bd);border-radius:12px;padding:13px 10px;text-align:center}
+.pstat .pv{font-size:23px;font-weight:800;letter-spacing:-1px;line-height:1;color:var(--tx)}
+.pstat .pl{font-size:9px;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px;font-weight:800;margin-top:6px}
+.ptabs{display:flex;gap:4px;margin:16px 0 14px;border-bottom:1px solid var(--bd)}
+.ptab{padding:8px 14px;font-size:12px;font-weight:700;color:var(--tx3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.ptab.on{color:var(--blue);border-bottom-color:var(--blue)}
+.tl{display:flex;flex-direction:column;gap:11px;max-height:50vh;overflow-y:auto}
+.tld{background:var(--bg3);border:1px solid var(--bd);border-radius:13px;padding:13px 15px}
+.tldh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
+.tldate{font-size:13px;font-weight:800;color:var(--tx)}
+.tlk{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--tx3);margin:10px 0 5px}
+.tlchips{display:flex;flex-wrap:wrap;gap:5px}
+.tlchip{font-size:11px;font-weight:600;padding:3px 9px;border-radius:7px;background:#fff;border:1px solid var(--bd);color:var(--tx2)}
+.pgrp{margin-bottom:15px}
+.pgrp h5{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--tx2);margin-bottom:8px}
+.preport{display:flex;align-items:center;gap:9px;padding:9px 12px;background:var(--bg3);border:1px solid var(--bd);border-radius:10px;margin-bottom:6px;cursor:pointer;transition:background .12s}
+.preport:hover{background:#f0f6ff}
+.preport .pid{font-size:10px;font-weight:800;color:var(--tx3);min-width:46px}
+.preport .ptt{font-size:13px;font-weight:600;flex:1;color:var(--tx)}
+.segday{display:inline-flex;background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:3px;gap:2px}
+.segday button{padding:6px 15px;border-radius:7px;border:none;background:transparent;color:var(--tx3);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.segday button.on{background:var(--blue);color:#fff}
+.tmtbl{width:100%;border-collapse:collapse}
+.tmtbl th{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--tx2);font-weight:800;text-align:left;padding:9px 11px;border-bottom:2px solid var(--bd);white-space:nowrap}
+.tmtbl td{padding:11px;font-size:13px;border-bottom:1px solid var(--bd);vertical-align:middle;white-space:nowrap}
+.tmtbl tr:last-child td{border-bottom:none}
+.tmname{display:flex;align-items:center;gap:9px;font-weight:700}
+.tmav{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0}
+.tmbig{font-size:17px;font-weight:800;letter-spacing:-.5px}
+.attpill{display:inline-flex;gap:4px;font-size:11px;font-weight:700}
+.attpill span{padding:2px 7px;border-radius:6px}
+@media (max-width:860px){
+  .pstats{grid-template-columns:repeat(2,1fr)}
+  .tmtblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .tmtbl{min-width:600px}
+}
+
 /* ===== MOBILE / RESPONSIVE ===== */
 @keyframes sheetUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
 @media (max-width:860px){
@@ -329,6 +389,8 @@ td{padding:12px 15px;font-size:13px;vertical-align:middle}
     <div class="avfrow" id="avfrow"></div>
   </div>
   <div style="display:flex;gap:7px;align-items:center">
+    <button class="btn btn-nav bsm" id="btnDay">&#128197; My Day</button>
+    <button class="btn btn-g bsm" id="btnTeam">&#128101; Team</button>
     <button class="btn btn-g bsm" id="btnTat" title="Generate TAT report (Excel)">&#128202; TAT Report</button>
     <button class="btn btn-g bsm" id="btnRef">&#8635;</button>
     <div class="srch"><span style="color:var(--tx3)">&#8981;</span><input type="text" placeholder="Search tickets, Jira IDs..." id="srch" oninput="renderAll()"></div>
@@ -365,6 +427,62 @@ td{padding:12px 15px;font-size:13px;vertical-align:middle}
   </div>
   <div id="tatPreview" style="font-size:12px;color:var(--tx2);background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin:4px 0 12px">Select a range to preview.</div>
   <button class="btn btn-p" id="btnGenTat" style="width:100%;padding:10px;font-size:14px;border-radius:10px;justify-content:center;margin-top:2px">&#11015; Download Excel Report</button>
+</div>
+</div>
+
+<!-- MY DAY -->
+<div class="ov" id="ovDay">
+<div class="modal">
+  <div class="mx" id="mxDay">&#x2715;</div>
+  <div class="mttl">&#128197; My Day <span id="dayWho" style="font-weight:600;color:var(--tx3);font-size:14px"></span></div>
+  <div id="dayIdentity"></div>
+  <div id="dayBody" style="display:none">
+    <div class="frow" style="margin-bottom:8px">
+      <div class="fg"><label class="fl">Date</label><input type="date" class="fi" id="dayDate"></div>
+      <div class="fg"><label class="fl">Attendance</label>
+        <div class="prtog" id="dayPresence">
+          <div class="prbtn office" data-pr="office">&#127970; Office</div>
+          <div class="prbtn wfh" data-pr="wfh">&#127968; WFH</div>
+          <div class="prbtn absent" data-pr="absent">&#127796; Absent</div>
+        </div>
+      </div>
+    </div>
+    <div class="daysec">
+      <h4>&#128221; Work in Hand — planned for today</h4>
+      <div class="wih-list" id="wihList"></div>
+      <button class="addb" id="wihAdd">+ Add item</button>
+      <button class="btn btn-g bsm" id="btnSavePlan" style="margin-top:11px">&#128190; Save Plan &amp; Notify</button>
+    </div>
+    <div class="daysec">
+      <h4>&#9989; Day-End Status</h4>
+      <div class="fg"><label class="fl">What I completed today</label><textarea class="fta" id="dayDone" placeholder="e.g. Finished BA-117 monthly summary query; reviewed BA-112"></textarea></div>
+      <div class="fg"><label class="fl">What's left / carry-over</label><textarea class="fta" id="dayPending" placeholder="e.g. BA-115 still waiting on dev input"></textarea></div>
+      <div class="fg"><label class="fl">Blockers (optional)</label><input class="fi" id="dayBlockers" placeholder="Anything blocking you?"></div>
+      <button class="btn btn-p" id="btnSubmitEnd" style="width:100%;justify-content:center;padding:12px;border-radius:11px;margin-top:2px">&#128228; Submit Day-End &amp; Email Manager</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- PROFILE -->
+<div class="ov" id="ovProfile">
+  <div class="modal modal-w"><div class="mx" id="mxProf">&#x2715;</div><div id="profBody"></div></div>
+</div>
+
+<!-- TEAM -->
+<div class="ov" id="ovTeam">
+<div class="modal modal-w">
+  <div class="mx" id="mxTeam">&#x2715;</div>
+  <div class="mttl">&#128101; Team Efficiency</div>
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+    <div class="segday" id="teamPeriod">
+      <button data-pd="day" class="on">Today</button>
+      <button data-pd="week">This Week</button>
+      <button data-pd="month">This Month</button>
+    </div>
+    <button class="btn btn-g bsm" id="btnTeamXls">&#11015; Excel</button>
+  </div>
+  <div id="teamBody"></div>
 </div>
 </div>
 
@@ -563,7 +681,7 @@ const D = {
   types:['SQL Query','Jinja Templating','Filter Setup','Debug / Report Fix','L4 Resolution','Data Authenticity Check','Dev Dependency Request','Dashboard Build','Comparative Analysis','Other'],
 };
 
-let cfg=loadCfg(), tickets=[], sprints=[], activity=[], fMode='all', fAv='', selStg='';
+let cfg=loadCfg(), tickets=[], sprints=[], activity=[], fMode='all', fAv='', selStg='', dailyLogs=[], profName='', profTab='timeline', teamPeriod='day';
 
 function loadCfg(){try{const s=localStorage.getItem('hlx4');if(s)return Object.assign({},D,JSON.parse(s));}catch(e){}return Object.assign({},D);}
 function fmtIST(d){if(!d)return '';try{const dt=d instanceof Date?d:new Date(d);if(isNaN(dt))return String(d);return dt.toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'2-digit',month:'long',year:'numeric',hour:'numeric',minute:'2-digit',hour12:true});}catch(e){return String(d);}}
@@ -585,7 +703,7 @@ function ss(state){
 function apiFetch(params){
   ss('syncing');
   // Auto-inject token for all write actions
-  const writeActions=['create','update','comment','deleteTicket','updateConfig'];
+  const writeActions=['create','update','comment','deleteTicket','updateConfig','saveDailyLog'];
   if(writeActions.includes(params.action)) params.token=TEAM_TOKEN;
   return new Promise((res,rej)=>{
     const cb='_cb'+Date.now()+'_'+Math.random().toString(36).slice(2);
@@ -605,6 +723,7 @@ async function loadTickets(retry){
   try{
     const d=await apiFetch({action:'getAll'});
     tickets=d.tickets||[];
+    if(Array.isArray(d.dailyLogs))dailyLogs=d.dailyLogs;
     if(d.config){
       let changed=false;
       if(Array.isArray(d.config.team)&&d.config.team.length){cfg.team=d.config.team;changed=true;}
@@ -1202,6 +1321,7 @@ function applyConfig(){
   document.getElementById('asm').textContent=cfg.appSub;
   document.title=cfg.appName+' · Hotelogix';
   document.getElementById('avrow').innerHTML=cfg.team.map(m=>'<div class="av" style="background:'+m.color+'20;color:'+m.color+'" title="'+m.name+'">'+m.initials+'</div>').join('');
+  document.querySelectorAll('#avrow .av').forEach(el=>el.addEventListener('click',function(){openProfile(this.title);}));
   if(cfg.myName)document.getElementById('mchip').style.display='';
 }
 
@@ -1424,6 +1544,167 @@ function generateTatReport(){
   }catch(err){console.error(err);toast('&#10007; Export failed: '+err.message,4500);}
 }
 
+// ===== DAILY LOG / PROFILE / TEAM =====
+function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function fmtYMD(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function escH(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function niceDate(ymd){const a=String(ymd).split('-').map(Number);if(a.length<3)return ymd;const dt=new Date(a[0],a[1]-1,a[2]);return dt.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});}
+function presMeta(p){return p==='wfh'?{l:'WFH',c:'wfh',e:'\u{1F3E0}'}:p==='absent'?{l:'Absent',c:'absent',e:'\u{1F3D6}'}:{l:'In Office',c:'office',e:'\u{1F3E2}'};}
+function logFor(member,date){return dailyLogs.find(l=>l.member===member&&l.date===date);}
+function periodRange(kind){const to=new Date();let from=new Date();from.setHours(0,0,0,0);
+  if(kind==='week'){const dow=(from.getDay()+6)%7;from.setDate(from.getDate()-dow);}
+  else if(kind==='month'){from.setDate(1);}
+  return {from:from,to:to,fromStr:fmtYMD(from),toStr:fmtYMD(to)};}
+function periodLabel(k){return k==='day'?'today':k==='week'?'this week':'this month';}
+function currentOngoing(member){return tickets.filter(t=>t.assignee===member&&!isDone(t)).map(t=>({id:t.id,title:t.title||'',stage:stageLabelOf(t)}));}
+function memberStats(member,kind){
+  const r=periodRange(kind);
+  const mine=tickets.filter(t=>t.assignee===member);
+  const completed=mine.filter(t=>{if(!isDone(t))return false;const d=parseIST(t.doneAt||t.updatedAt);return d&&d>=r.from&&d<=r.to;});
+  const inprog=mine.filter(t=>!isDone(t));
+  const tats=completed.map(tatDaysOf).filter(x=>x!==null);
+  const avg=tats.length?tats.reduce((a,b)=>a+b,0)/tats.length:null;
+  const logs=dailyLogs.filter(l=>l.member===member&&l.date>=r.fromStr&&l.date<=r.toStr);
+  const att={office:0,wfh:0,absent:0};logs.forEach(l=>{att[l.presence]=(att[l.presence]||0)+1;});
+  return {completed:completed.length,inprog:inprog.length,avg:avg,att:att,planDays:logs.filter(l=>(l.plan||[]).filter(Boolean).length).length,total:mine.length};
+}
+
+// ---- My Day ----
+function openDayModal(){
+  if(!cfg.myName){renderDayIdentity();openOv('ovDay');return;}
+  document.getElementById('dayIdentity').innerHTML='';
+  document.getElementById('dayBody').style.display='';
+  document.getElementById('dayWho').textContent='\u00b7 '+cfg.myName;
+  const dd=document.getElementById('dayDate');if(!dd.value)dd.value=todayStr();
+  loadDayInto(cfg.myName,dd.value);
+  openOv('ovDay');
+}
+function renderDayIdentity(){
+  document.getElementById('dayBody').style.display='none';
+  document.getElementById('dayWho').textContent='';
+  document.getElementById('dayIdentity').innerHTML='<div class="daysec"><h4>\u{1F464} Who are you?</h4><div class="fg"><select class="fs" id="idSel">'+cfg.team.map(m=>'<option>'+m.name+'</option>').join('')+'</select></div><button class="btn btn-p bsm" id="idSet">This is me</button></div>';
+  document.getElementById('idSet').onclick=function(){cfg.myName=document.getElementById('idSel').value;saveCfg();applyConfig();document.getElementById('mchip').style.display='';openDayModal();};
+}
+function loadDayInto(member,date){
+  const log=logFor(member,date)||{presence:'office',plan:[],doneText:'',pendingText:'',blockers:''};
+  document.querySelectorAll('#dayPresence .prbtn').forEach(b=>b.classList.toggle('on',b.dataset.pr===(log.presence||'office')));
+  const items=(log.plan&&log.plan.filter(Boolean).length)?log.plan.filter(Boolean):[''];
+  renderWih(items);
+  document.getElementById('dayDone').value=log.doneText||'';
+  document.getElementById('dayPending').value=log.pendingText||'';
+  document.getElementById('dayBlockers').value=log.blockers||'';
+}
+function renderWih(items){
+  document.getElementById('wihList').innerHTML=items.map((t,i)=>'<div class="wih-item"><input class="fi" value="'+String(t).replace(/"/g,'&quot;')+'" placeholder="Task / report you\u2019re working on"><button class="wih-rm" data-i="'+i+'">\u2715</button></div>').join('');
+  document.querySelectorAll('#wihList .wih-rm').forEach(b=>b.addEventListener('click',function(){const it=collectWih();it.splice(+this.dataset.i,1);renderWih(it.length?it:['']);}));
+}
+function collectWih(){return Array.from(document.querySelectorAll('#wihList input')).map(i=>i.value);}
+function getDayPresence(){const on=document.querySelector('#dayPresence .prbtn.on');return on?on.dataset.pr:'office';}
+async function saveDay(phase){
+  const member=cfg.myName,date=document.getElementById('dayDate').value||todayStr();
+  const presence=getDayPresence();
+  const plan=collectWih().map(s=>s.trim()).filter(Boolean);
+  const ongoing=currentOngoing(member);
+  const payload={action:'saveDailyLog',member:member,date:date,presence:presence,phase:phase,plan:JSON.stringify(plan),ongoing:JSON.stringify(ongoing)};
+  if(phase==='end'){payload.doneText=document.getElementById('dayDone').value;payload.pendingText=document.getElementById('dayPending').value;payload.blockers=document.getElementById('dayBlockers').value;}
+  let log=logFor(member,date);
+  if(!log){log={id:'LOG-'+member+'-'+date,member:member,date:date};dailyLogs.push(log);}
+  log.presence=presence;log.plan=plan;log.ongoing=ongoing;
+  if(phase==='end'){log.doneText=payload.doneText;log.pendingText=payload.pendingText;log.blockers=payload.blockers;}
+  try{await apiFetch(payload);toast(phase==='end'?'Day-end submitted &amp; manager emailed &#10003;':'Plan saved &#10003;');}
+  catch(e){ss('error');toast('&#9888; Saved on device — sync failed',3500);}
+  logAct('&#128197; '+member+' '+(phase==='end'?'submitted day-end':'saved plan')+' \u00b7 '+presMeta(presence).l,'#142e50');
+  if(phase==='end')closeOv('ovDay');
+}
+
+// ---- Profile ----
+function openProfile(name){profName=name;profTab='timeline';renderProfile();openOv('ovProfile');}
+function renderProfile(){
+  const m=tmOf(profName);
+  const today=logFor(profName,todayStr());
+  const pm=today?presMeta(today.presence):null;
+  const sT=memberStats(profName,'day'),sW=memberStats(profName,'week'),sM=memberStats(profName,'month');
+  const html='<div class="profhd"><div class="profav" style="background:'+m.color+'22;color:'+m.color+'">'+m.initials+'</div>'+
+    '<div><div class="profnm">'+escH(m.name)+'</div><div class="profsub">'+
+      (pm?'<span class="pbadge pb-'+pm.c+'">'+pm.e+' '+pm.l+' today</span>':'<span style="color:var(--tx3)">No log today</span>')+
+      '<span>'+sM.total+' reports owned</span></div></div></div>'+
+    '<div class="pstats">'+pstat(sT.completed,'Done Today')+pstat(sW.completed,'Done · Week')+pstat(sM.completed,'Done · Month')+pstat(sM.inprog,'In Progress')+'</div>'+
+    '<div class="pstats">'+pstat(sM.avg!==null?sM.avg.toFixed(1)+'d':'\u2014','Avg TAT (mo)')+pstat(sM.att.office,'\u{1F3E2} Office')+pstat(sM.att.wfh,'\u{1F3E0} WFH')+pstat(sM.att.absent,'\u{1F3D6} Absent')+'</div>'+
+    '<div class="ptabs"><div class="ptab'+(profTab==='timeline'?' on':'')+'" data-pt="timeline">Daily Timeline</div><div class="ptab'+(profTab==='reports'?' on':'')+'" data-pt="reports">Assigned Reports</div></div>'+
+    '<div id="profPane">'+(profTab==='timeline'?profTimeline():profReports())+'</div>';
+  document.getElementById('profBody').innerHTML=html;
+  document.getElementById('mxProf').onclick=function(){closeOv('ovProfile');};
+  document.querySelectorAll('#profBody .ptab').forEach(el=>el.addEventListener('click',function(){profTab=this.dataset.pt;renderProfile();}));
+  document.querySelectorAll('#profPane .preport').forEach(el=>el.addEventListener('click',function(){closeOv('ovProfile');openDetail(this.dataset.id);}));
+}
+function pstat(v,l){return '<div class="pstat"><div class="pv">'+v+'</div><div class="pl">'+l+'</div></div>';}
+function profTimeline(){
+  const logs=dailyLogs.filter(l=>l.member===profName).slice().sort((a,b)=>String(b.date).localeCompare(String(a.date))).slice(0,30);
+  if(!logs.length)return '<div class="ecol" style="margin:0">No daily logs yet for '+escH(profName)+'.</div>';
+  return '<div class="tl">'+logs.map(l=>{
+    const pm=presMeta(l.presence),plan=(l.plan||[]).filter(Boolean),ong=(l.ongoing||[]);
+    return '<div class="tld"><div class="tldh"><div class="tldate">'+niceDate(l.date)+'</div><span class="pbadge pb-'+pm.c+'">'+pm.e+' '+pm.l+'</span></div>'+
+      (plan.length?'<div class="tlk">Work in hand</div><div class="tlchips">'+plan.map(p=>'<span class="tlchip">'+escH(p)+'</span>').join('')+'</div>':'')+
+      (ong.length?'<div class="tlk">Ongoing reports</div><div class="tlchips">'+ong.map(o=>'<span class="tlchip">'+escH(o.id)+'</span>').join('')+'</div>':'')+
+      (l.doneText?'<div class="tlk">Completed</div><div style="font-size:12.5px;color:var(--tx2);line-height:1.55">'+escH(l.doneText).replace(/\n/g,'<br>')+'</div>':'')+
+      (l.pendingText?'<div class="tlk">Pending</div><div style="font-size:12.5px;color:var(--tx2);line-height:1.55">'+escH(l.pendingText).replace(/\n/g,'<br>')+'</div>':'')+
+      (l.blockers?'<div class="tlk" style="color:#b45309">Blockers</div><div style="font-size:12.5px;color:#b45309;line-height:1.55">'+escH(l.blockers)+'</div>':'')+
+    '</div>';
+  }).join('')+'</div>';
+}
+function profReports(){
+  const mine=tickets.filter(t=>t.assignee===profName);
+  const ip=mine.filter(t=>!isDone(t)&&!(t.dep||t.stage==='dep'));
+  const bl=mine.filter(t=>t.dep||t.stage==='dep');
+  const dn=mine.filter(isDone).slice().sort((a,b)=>{const x=parseIST(b.doneAt||b.updatedAt)||0,y=parseIST(a.doneAt||a.updatedAt)||0;return x-y;}).slice(0,12);
+  const grp=(title,arr)=>arr.length?'<div class="pgrp"><h5>'+title+' ('+arr.length+')</h5>'+arr.map(t=>'<div class="preport" data-id="'+t.id+'"><span class="pid">'+t.id+'</span><span class="ptt">'+escH(t.title||'')+'</span>'+(isDone(t)?'<span class="pbadge pb-office">'+(tatDaysOf(t)!==null?tatDaysOf(t).toFixed(1)+'d':'done')+'</span>':'<span class="tlchip">'+stageLabelOf(t)+'</span>')+'</div>').join('')+'</div>':'';
+  return (grp('In Progress',ip)+grp('Blocked',bl)+grp('Recently Completed',dn))||'<div class="ecol" style="margin:0">No reports assigned.</div>';
+}
+
+// ---- Team Efficiency ----
+function openTeam(){teamPeriod='day';renderTeam();openOv('ovTeam');}
+function renderTeam(){
+  document.querySelectorAll('#teamPeriod button').forEach(b=>b.classList.toggle('on',b.dataset.pd===teamPeriod));
+  const rows=cfg.team.map(m=>({m:m,s:memberStats(m.name,teamPeriod)}));
+  const maxDone=Math.max(1,Math.max.apply(null,rows.map(r=>r.s.completed)));
+  let html='<div class="tmtblwrap"><table class="tmtbl"><thead><tr><th>Member</th><th>Completed</th><th>In Progress</th><th>Avg TAT</th><th>Attendance</th><th>Plan days</th></tr></thead><tbody>';
+  rows.forEach(r=>{const a=r.s.att;
+    html+='<tr><td><div class="tmname"><div class="tmav" style="background:'+r.m.color+'22;color:'+r.m.color+'">'+r.m.initials+'</div>'+escH(r.m.name)+'</div></td>'+
+      '<td><span class="tmbig">'+r.s.completed+'</span><span style="display:inline-block;height:6px;border-radius:6px;background:'+r.m.color+';width:'+Math.round(r.s.completed/maxDone*54)+'px;vertical-align:middle;margin-left:7px"></span></td>'+
+      '<td>'+r.s.inprog+'</td><td>'+(r.s.avg!==null?r.s.avg.toFixed(1)+'d':'\u2014')+'</td>'+
+      '<td><span class="attpill"><span style="background:#dcfff1;color:#13794e">\u{1F3E2} '+a.office+'</span><span style="background:#d7f3fb;color:#0b6a82">\u{1F3E0} '+a.wfh+'</span><span style="background:#ffeceb;color:#b3271e">\u{1F3D6} '+a.absent+'</span></span></td>'+
+      '<td>'+r.s.planDays+'</td></tr>';
+  });
+  const tot=rows.reduce((s,r)=>s+r.s.completed,0);
+  html+='</tbody></table></div><div style="margin-top:14px;font-size:12px;color:var(--tx3)">Team completed <b style="color:var(--tx)">'+tot+'</b> report(s) '+periodLabel(teamPeriod)+'. Tap a member\u2019s avatar in the header to open their full profile.</div>';
+  document.getElementById('teamBody').innerHTML=html;
+}
+function exportTeamXls(){
+  if(typeof XLSX==='undefined'){toast('&#10007; Excel library not loaded',3500);return;}
+  const rows=cfg.team.map(m=>({m:m,s:memberStats(m.name,teamPeriod)}));
+  const wb=XLSX.utils.book_new();
+  const head=['Member','Completed','In Progress','Avg TAT (d)','Office','WFH','Absent','Plan Days','Reports Owned'];
+  const ws={};head.forEach((h,c)=>_put(ws,0,c,h,_hdr()));
+  rows.forEach((r,i)=>{const rr=i+1,bg=i%2?'F7F9FC':'FFFFFF';
+    [r.m.name,r.s.completed,r.s.inprog,r.s.avg!==null?Math.round(r.s.avg*100)/100:'',r.s.att.office,r.s.att.wfh,r.s.att.absent,r.s.planDays,r.s.total]
+      .forEach((val,c)=>_put(ws,rr,c,val,_cell(c===0?'left':'center',bg),c===3?'0.0':null));});
+  ws['!ref']=XLSX.utils.encode_range({s:{r:0,c:0},e:{r:rows.length,c:head.length-1}});
+  ws['!cols']=[{wch:14},{wch:11},{wch:12},{wch:12},{wch:8},{wch:7},{wch:8},{wch:11},{wch:14}];
+  XLSX.utils.book_append_sheet(wb,ws,'Efficiency');
+  const logs=dailyLogs.slice().sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  const lh=['Date','Member','Presence','Work in Hand','Completed','Pending','Blockers'];
+  const ls={};lh.forEach((h,c)=>_put(ls,0,c,h,_hdr()));
+  logs.forEach((l,i)=>{const rr=i+1,bg=i%2?'F7F9FC':'FFFFFF';
+    [l.date,l.member,presMeta(l.presence).l,(l.plan||[]).filter(Boolean).join('; '),l.doneText||'',l.pendingText||'',l.blockers||'']
+      .forEach((val,c)=>_put(ls,rr,c,val,_cell(c<3?'center':'left',bg)));});
+  ls['!ref']=XLSX.utils.encode_range({s:{r:0,c:0},e:{r:logs.length,c:lh.length-1}});
+  ls['!cols']=[{wch:12},{wch:12},{wch:13},{wch:40},{wch:40},{wch:34},{wch:22}];
+  XLSX.utils.book_append_sheet(wb,ls,'Daily Logs');
+  XLSX.writeFile(wb,'Team_Efficiency_'+teamPeriod+'_'+todayStr()+'.xlsx');
+  toast('&#10003; Team report downloaded');
+  logAct('&#128101; Exported team efficiency ('+periodLabel(teamPeriod)+')','#142e50');
+}
+
 // WIRE STATIC BUTTONS — all via addEventListener, no inline onclick
 document.getElementById('btnNew').addEventListener('click',openNewModal);
 document.getElementById('btnSaveEdit').addEventListener('click',saveEdit);
@@ -1438,6 +1719,17 @@ document.querySelectorAll('.qrrow .chip').forEach(el=>el.addEventListener('click
 document.getElementById('btnAct').addEventListener('click',openActModal);
 document.getElementById('btnSpr').addEventListener('click',openSprintModal);
 document.getElementById('btnCfg').addEventListener('click',openSettings);
+document.getElementById('btnDay').addEventListener('click',openDayModal);
+document.getElementById('btnTeam').addEventListener('click',openTeam);
+document.getElementById('mxDay').addEventListener('click',function(){closeOv('ovDay');});
+document.getElementById('mxTeam').addEventListener('click',function(){closeOv('ovTeam');});
+document.getElementById('wihAdd').addEventListener('click',function(){renderWih(collectWih().concat(['']));});
+document.getElementById('btnSavePlan').addEventListener('click',function(){saveDay('plan');});
+document.getElementById('btnSubmitEnd').addEventListener('click',function(){saveDay('end');});
+document.getElementById('dayDate').addEventListener('change',function(){if(cfg.myName)loadDayInto(cfg.myName,this.value);});
+document.querySelectorAll('#dayPresence .prbtn').forEach(b=>b.addEventListener('click',function(){document.querySelectorAll('#dayPresence .prbtn').forEach(x=>x.classList.remove('on'));this.classList.add('on');}));
+document.querySelectorAll('#teamPeriod button').forEach(b=>b.addEventListener('click',function(){teamPeriod=this.dataset.pd;renderTeam();}));
+document.getElementById('btnTeamXls').addEventListener('click',exportTeamXls);
 document.getElementById('btnCreate').addEventListener('click',createTicket);
 document.getElementById('btnCrSp').addEventListener('click',createSpr);
 document.getElementById('btnSaveCfg').addEventListener('click',saveSettings);
@@ -1453,7 +1745,7 @@ document.getElementById('mxAct').addEventListener('click',function(){closeOv('ov
 document.getElementById('mxCfg').addEventListener('click',function(){closeOv('ovCfg');});
 
 // Close overlay on backdrop click
-['ovNew','ovDetail','ovEdit','ovSprint','ovAct','ovCfg','ovTat'].forEach(id=>{
+['ovNew','ovDetail','ovEdit','ovSprint','ovAct','ovCfg','ovTat','ovDay','ovProfile','ovTeam'].forEach(id=>{
   document.getElementById(id).addEventListener('click',function(e){if(e.target===this)closeOv(id);});
 });
 
