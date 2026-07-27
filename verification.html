@@ -403,6 +403,66 @@ document.addEventListener('paste',(e)=>{
   if(files.length) handleFiles(files);
 });
 
+// ==================================================================
+// POST UPLOAD — sends file in request BODY via hidden form+iframe.
+// JSONP/GET puts data in the URL, which caps out around 8KB and
+// silently aborts (NS_BINDING_ABORTED). POST has no such limit.
+// ==================================================================
+function apiUpload(params){
+  ss('syncing');
+  params.token = TEAM_TOKEN;
+  return new Promise((res, rej)=>{
+    const nonce = 'up' + Date.now() + '_' + Math.random().toString(36).slice(2);
+
+    // Hidden iframe receives the response
+    const iframe = document.createElement('iframe');
+    iframe.name = nonce;
+    iframe.id = nonce;
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+
+    // Hidden form POSTs into that iframe
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = API_URL;
+    form.target = nonce;
+    form.enctype = 'application/x-www-form-urlencoded';
+    form.style.display = 'none';
+
+    Object.entries(params).forEach(([k,v])=>{
+      const input = document.createElement('textarea');
+      input.name = k;
+      input.value = (typeof v === 'object') ? JSON.stringify(v) : String(v);
+      form.appendChild(input);
+    });
+    document.body.appendChild(form);
+
+    let done = false;
+    function cleanup(){
+      clearTimeout(timer);
+      if(form.parentNode) form.parentNode.removeChild(form);
+      setTimeout(()=>{ if(iframe.parentNode) iframe.parentNode.removeChild(iframe); }, 1500);
+    }
+
+    const timer = setTimeout(()=>{
+      if(done) return; done = true; cleanup(); ss('error');
+      rej(new Error('Upload timed out'));
+    }, 120000);
+
+    iframe.onload = function(){
+      if(done) return; done = true; cleanup(); ss('ok');
+      // Cross-origin: we can't read the iframe body, but load = server responded.
+      res({ success: true });
+    };
+    iframe.onerror = function(){
+      if(done) return; done = true; cleanup(); ss('error');
+      rej(new Error('Upload failed'));
+    };
+
+    form.submit();
+  });
+}
+
 // Downscale image to max 1600px on longest side, JPEG q=0.82
 // Keeps quality readable but stays well under 2MB even for big screenshots
 async function downscaleImage(file){
@@ -444,6 +504,7 @@ async function handleFiles(files){
   const ticketId=selectedTicket.id;
   const uploader=myName||prompt('Your name for uploads:','Avi')||'Anonymous';
   if(uploader&&!myName){myName=uploader;localStorage.setItem('hlx_myname',uploader);}
+  let needsReload=false;
 
   for(let i=0;i<files.length;i++){
     const f=files[i];
@@ -456,7 +517,7 @@ async function handleFiles(files){
       updateQueueItem(qid,'up','<span class="spin"></span> Compressing...');
       const scaled=await downscaleImage(f);
       updateQueueItem(qid,'up','<span class="spin"></span> Uploading '+Math.round(scaled.size/1024)+'KB...');
-      const d=await apiFetch({
+      await apiUpload({
         action:'uploadAttachment',
         id:ticketId,
         fileData:scaled.b64,
@@ -465,13 +526,16 @@ async function handleFiles(files){
         uploader
       });
       updateQueueItem(qid,'ok','Uploaded &#10003;');
-      // Update local state
-      const t=tickets.find(x=>x.id===ticketId);
-      if(t){ if(!t.attachments)t.attachments=[]; t.attachments.push(d.attachment); }
-      renderStats(); render();
+      needsReload=true;
     }catch(e){
       updateQueueItem(qid,'err','Failed: '+e.message);
     }
+  }
+
+  // POST responses can't be read cross-origin, so pull fresh data from the sheet
+  if(needsReload){
+    toast('&#10003; Uploaded — refreshing gallery...');
+    setTimeout(()=>loadTickets(true), 1200);
   }
 }
 
