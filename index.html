@@ -365,6 +365,33 @@ td{padding:12px 15px;font-size:13px;vertical-align:middle}
   .mttl{font-size:17px}
   .dg{grid-template-columns:1fr 1fr;gap:10px}
 }
+
+/* VERIFICATION SCREENSHOTS IN TICKET DETAIL */
+.attgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(124px,1fr));gap:9px;margin-top:6px}
+.attcell{position:relative;aspect-ratio:1;background:var(--sf3,#eee);border-radius:9px;overflow:hidden;cursor:pointer;transition:all .2s;border:1px solid var(--bd)}
+.attcell:hover{transform:scale(1.04);box-shadow:0 6px 16px rgba(0,0,0,.15)}
+.attcell img{width:100%;height:100%;object-fit:cover;display:block}
+.attov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.8),transparent 55%);opacity:0;transition:opacity .2s;display:flex;align-items:flex-end;padding:6px;font-size:9px;font-weight:700;color:#fff}
+.attcell:hover .attov{opacity:1}
+/* LIGHTBOX */
+.tlb{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.94);align-items:center;justify-content:center;padding:40px;flex-direction:column;gap:12px}
+.tlb.open{display:flex}
+.tlb img{max-width:94%;max-height:80vh;border-radius:10px;object-fit:contain;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.tlb-info{color:#fff;font-size:13px;text-align:center;opacity:.9}
+.tlb-x{position:absolute;top:20px;right:20px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;width:38px;height:38px;border-radius:50%;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.tlb-x:hover{background:rgba(255,255,255,.3);transform:rotate(90deg)}
+.tlb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;width:44px;height:44px;border-radius:50%;font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.tlb-nav:hover{background:rgba(255,255,255,.3)}
+.tlb-nav.p{left:20px}.tlb-nav.n{right:20px}
+
+.attcard{background:#fff;border:1px solid var(--bd);border-radius:10px;overflow:hidden;transition:all .2s;box-shadow:var(--sh)}
+.attcard:hover{transform:translateY(-2px);box-shadow:var(--sh2);border-color:var(--blue)}
+.attcard .attcell{border:none;border-radius:0;box-shadow:none}
+.attcard .attcell:hover{transform:none;box-shadow:none}
+.acap{padding:7px 9px 8px;border-top:1px solid var(--bd)}
+.acap-d{font-size:11px;font-weight:600;color:var(--tx);line-height:1.3;margin-bottom:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.acap-m{font-size:9px;color:var(--tx3);font-weight:600}
+.acap-w{color:var(--blue)}
 </style>
 </head>
 <body>
@@ -1070,6 +1097,26 @@ function openDetail(id){
   const jiraB=t.jiraId?'<div class="di"><div class="dl">Jira</div><div class="dv"><a class="jiraf" href="'+(t.jiraUrl||'#')+'" target="_blank">&#11041; '+t.jiraId+'</a></div></div>':'';
   const rtB=t.reportType?'<div class="di"><div class="dl">Report Type</div><div class="dv" style="color:#a78bfa">'+t.reportType+'</div></div>':'';
 
+  // ── Verification screenshots (uploaded via the Verification Portal) ──
+  const atts=Array.isArray(t.attachments)?t.attachments:[];
+  const attGrid=atts.length
+    ? '<div class="attgrid">'+atts.map(function(a,i){
+        var thumb=a.fileId?'https://drive.google.com/thumbnail?id='+a.fileId+'&sz=w400':a.thumbUrl;
+        var d=a.desc?'<div class="acap-d">'+a.desc+'</div>':'';
+        return '<div class="attcard">'
+          +'<div class="attcell" data-att="'+t.id+'" data-ai="'+i+'">'
+          +'<img src="'+thumb+'" alt="'+(a.name||'')+'" loading="lazy">'
+          +'</div>'
+          +'<div class="acap">'+d
+          +'<div class="acap-m"><span class="acap-w">'+(a.uploader||'?')+'</span> &middot; '+fmtStamp(a.ts)+'</div>'
+          +'</div></div>';
+      }).join('')+'</div>'
+    : '<div style="font-size:12px;color:var(--tx3);padding:8px 0">No verification screenshots yet</div>';
+  const attHtml='<div style="margin-top:13px"><div class="fl">'
+    +'Verification Screenshots ('+atts.length+') '
+    +'<a href="verification.html" style="font-weight:600;color:var(--blue);text-decoration:none;font-size:10px;margin-left:6px">+ Add</a>'
+    +'</div>'+attGrid+'</div>';
+
   document.getElementById('detailContent').innerHTML=
     '<div class="mx" id="mxDet">&#x2715;</div>'
     +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'
@@ -1092,6 +1139,7 @@ function openDetail(id){
     +(isD?'<div class="di"><div class="dl">Completed</div><div class="dv">'+(t.doneAt||t.updatedAt||'&#8212;')+'</div></div><div class="di"><div class="dl">Turnaround (TAT)</div><div class="dv" style="color:#1a9c5b;font-weight:700">'+tatLabel(t)+'</div></div>':'')
     +jiraB+rtB+'</div>'
     +'<div style="margin-top:13px"><div class="fl">Description</div><div style="font-size:13px;color:var(--tx2);line-height:1.6;background:var(--sf);border-radius:8px;padding:10px 12px;border:1px solid var(--bd)">'+(t.desc||'No description.')+'</div></div>'
+    +attHtml
     +'<div style="margin-top:13px"><div class="fl">Move Stage</div><div class="stgsel" id="stgmove">'+smove+'</div></div>'
     +'<div style="margin-top:13px"><div class="fl">Comments ('+comments.length+')</div><div class="cmtlist">'+cmtHtml+'</div>'
     +'<div class="crow"><select class="fs" id="cwho" style="width:130px;padding:7px 10px">'+cfg.team.map(m=>'<option>'+m.name+'</option>').join('')+'</select>'
@@ -1101,6 +1149,12 @@ function openDetail(id){
 
   // bind close
   document.getElementById('mxDet').onclick=function(){closeOv('ovDetail');};
+  // bind verification screenshot clicks
+  document.querySelectorAll('.attcell[data-att]').forEach(function(el){
+    el.addEventListener('click',function(){
+      tOpenLb(this.dataset.att, parseInt(this.dataset.ai));
+    });
+  });
   // bind mark done
   document.querySelectorAll('[data-mkd]').forEach(el=>el.addEventListener('click',function(){markDone(this.dataset.mkd,this.dataset.val==='true');}));
   // bind delete with confirm
@@ -1878,6 +1932,53 @@ applyConfig();
 renderAll();
 if(cfg.apiUrl)loadTickets();
 setInterval(function(){if(cfg.apiUrl)loadTickets();},60000);
+
+
+// Format "27 July 2026, 3:27 PM" -> "27 July 2026; 3:27PM"
+function fmtStamp(ts){
+  if(!ts) return '';
+  return String(ts).replace(',',';').replace(/\s(AM|PM)$/i,'$1');
+}
+// ===== VERIFICATION SCREENSHOT LIGHTBOX =====
+var tLb={id:null,i:0};
+function tOpenLb(tid,i){
+  var t=tickets.find(function(x){return x.id===tid;});
+  if(!t||!Array.isArray(t.attachments)||!t.attachments.length)return;
+  tLb={id:tid,i:i};tShowLb();
+  document.getElementById('tLightbox').classList.add('open');
+}
+function tShowLb(){
+  var t=tickets.find(function(x){return x.id===tLb.id;});if(!t)return;
+  var a=t.attachments[tLb.i];if(!a)return;
+  var big=a.fileId?'https://drive.google.com/thumbnail?id='+a.fileId+'&sz=w1600':a.url;
+  var el=document.getElementById('tlbImg');
+  el.onerror=function(){this.onerror=null;this.src=a.url;};
+  el.src=big;
+  document.getElementById('tlbName').textContent=a.desc?a.desc:(t.id+' \u2014 '+(a.name||''));
+  document.getElementById('tlbMeta').innerHTML=t.id+' &middot; Uploaded by '+(a.uploader||'?')+' &middot; '+fmtStamp(a.ts)+' &middot; '+(tLb.i+1)+' / '+t.attachments.length;
+}
+function tLbNav(d){
+  var t=tickets.find(function(x){return x.id===tLb.id;});if(!t)return;
+  tLb.i=(tLb.i+d+t.attachments.length)%t.attachments.length;tShowLb();
+}
+function tCloseLb(){document.getElementById('tLightbox').classList.remove('open');}
+document.getElementById('tlbX').addEventListener('click',tCloseLb);
+document.getElementById('tlbP').addEventListener('click',function(){tLbNav(-1);});
+document.getElementById('tlbN').addEventListener('click',function(){tLbNav(1);});
+document.getElementById('tLightbox').addEventListener('click',function(e){if(e.target===this)tCloseLb();});
+document.addEventListener('keydown',function(e){
+  if(!document.getElementById('tLightbox').classList.contains('open'))return;
+  if(e.key==='Escape')tCloseLb();
+  if(e.key==='ArrowLeft')tLbNav(-1);
+  if(e.key==='ArrowRight')tLbNav(1);
+});
 </script>
+<div class="tlb" id="tLightbox">
+  <button class="tlb-x" id="tlbX">&#x2715;</button>
+  <button class="tlb-nav p" id="tlbP">&#10094;</button>
+  <img id="tlbImg" src="" alt="">
+  <div class="tlb-info"><div id="tlbName" style="font-weight:700;margin-bottom:2px"></div><div id="tlbMeta"></div></div>
+  <button class="tlb-nav n" id="tlbN">&#10095;</button>
+</div>
 </body>
 </html>
