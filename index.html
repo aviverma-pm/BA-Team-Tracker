@@ -392,6 +392,12 @@ td{padding:12px 15px;font-size:13px;vertical-align:middle}
 .acap-d{font-size:11px;font-weight:600;color:var(--tx);line-height:1.3;margin-bottom:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .acap-m{font-size:9px;color:var(--tx3);font-weight:600}
 .acap-w{color:var(--blue)}
+
+.attfile{position:relative;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:8px;text-align:center;transition:filter .2s}
+.attfile:hover{filter:brightness(.96)}
+.af-i{font-size:26px;line-height:1}
+.af-b{font-size:8px;font-weight:800;letter-spacing:.7px;text-transform:uppercase}
+.af-n{font-size:9px;font-weight:600;color:var(--tx2);line-height:1.2;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:100%}
 </style>
 </head>
 <body>
@@ -1101,19 +1107,28 @@ function openDetail(id){
   const atts=Array.isArray(t.attachments)?t.attachments:[];
   const attGrid=atts.length
     ? '<div class="attgrid">'+atts.map(function(a,i){
-        var thumb=a.fileId?'https://drive.google.com/thumbnail?id='+a.fileId+'&sz=w400':a.thumbUrl;
+        var k=attKind(a);
         var d=a.desc?'<div class="acap-d">'+a.desc+'</div>':'';
-        return '<div class="attcard">'
-          +'<div class="attcell" data-att="'+t.id+'" data-ai="'+i+'">'
-          +'<img src="'+thumb+'" alt="'+(a.name||'')+'" loading="lazy">'
-          +'</div>'
+        var face;
+        if(k==='image'){
+          var thumb=a.fileId?'https://drive.google.com/thumbnail?id='+a.fileId+'&sz=w400':a.thumbUrl;
+          face='<div class="attcell" data-att="'+t.id+'" data-ai="'+i+'">'
+              +'<img src="'+thumb+'" alt="'+(a.name||'')+'" loading="lazy"></div>';
+        }else{
+          var m=KIND_META[k]||KIND_META.file;
+          face='<div class="attfile" data-open="'+(a.viewUrl||a.url)+'" style="background:'+m.bg+'">'
+              +'<div class="af-i">'+m.icon+'</div>'
+              +'<div class="af-b" style="color:'+m.color+'">'+m.label+'</div>'
+              +'<div class="af-n">'+(a.name||'')+'</div></div>';
+        }
+        return '<div class="attcard">'+face
           +'<div class="acap">'+d
           +'<div class="acap-m"><span class="acap-w">'+(a.uploader||'?')+'</span> &middot; '+fmtStamp(a.ts)+'</div>'
           +'</div></div>';
       }).join('')+'</div>'
-    : '<div style="font-size:12px;color:var(--tx3);padding:8px 0">No verification screenshots yet</div>';
+    : '<div style="font-size:12px;color:var(--tx3);padding:8px 0">No verification files yet</div>';
   const attHtml='<div style="margin-top:13px"><div class="fl">'
-    +'Verification Screenshots ('+atts.length+') '
+    +'Verification Files ('+atts.length+') '
     +'<a href="verification.html" style="font-weight:600;color:var(--blue);text-decoration:none;font-size:10px;margin-left:6px">+ Add</a>'
     +'</div>'+attGrid+'</div>';
 
@@ -1153,6 +1168,11 @@ function openDetail(id){
   document.querySelectorAll('.attcell[data-att]').forEach(function(el){
     el.addEventListener('click',function(){
       tOpenLb(this.dataset.att, parseInt(this.dataset.ai));
+    });
+  });
+  document.querySelectorAll('.attfile[data-open]').forEach(function(el){
+    el.addEventListener('click',function(){
+      window.open(this.dataset.open,'_blank','noopener');
     });
   });
   // bind mark done
@@ -1934,6 +1954,29 @@ if(cfg.apiUrl)loadTickets();
 setInterval(function(){if(cfg.apiUrl)loadTickets();},60000);
 
 
+
+// ===== FILE TYPE HELPERS (verification files) =====
+function attKind(a){
+  var mime=String(a.mime||'').toLowerCase();
+  var name=String(a.name||'').toLowerCase();
+  if(mime.indexOf('image/')===0) return 'image';
+  if(mime==='application/pdf' || /\.pdf$/.test(name)) return 'pdf';
+  if(/spreadsheet|ms-excel/.test(mime) || /\.(xlsx|xls|ods)$/.test(name)) return 'excel';
+  if(mime.indexOf('csv')>=0 || /\.csv$/.test(name)) return 'csv';
+  return 'file';
+}
+var KIND_META={
+  pdf:{icon:'\uD83D\uDCC4',label:'PDF',color:'#e2483d',bg:'#ffeceb'},
+  excel:{icon:'\uD83D\uDCCA',label:'Excel',color:'#1d7044',bg:'#dcfff1'},
+  csv:{icon:'\uD83D\uDCCB',label:'CSV',color:'#0071e3',bg:'#e9f2ff'},
+  file:{icon:'\uD83D\uDCCE',label:'File',color:'#6e6e73',bg:'#f0f0f2'}
+};
+function fmtSize(b){
+  if(!b) return '';
+  if(b<1024) return b+' B';
+  if(b<1048576) return Math.round(b/1024)+' KB';
+  return (b/1048576).toFixed(1)+' MB';
+}
 // Format "27 July 2026, 3:27 PM" -> "27 July 2026; 3:27PM"
 function fmtStamp(ts){
   if(!ts) return '';
@@ -1955,11 +1998,18 @@ function tShowLb(){
   el.onerror=function(){this.onerror=null;this.src=a.url;};
   el.src=big;
   document.getElementById('tlbName').textContent=a.desc?a.desc:(t.id+' \u2014 '+(a.name||''));
-  document.getElementById('tlbMeta').innerHTML=t.id+' &middot; Uploaded by '+(a.uploader||'?')+' &middot; '+fmtStamp(a.ts)+' &middot; '+(tLb.i+1)+' / '+t.attachments.length;
+  var imgs=t.attachments.filter(function(x){return attKind(x)==='image';});
+  var pos=imgs.findIndex(function(x){return x.fileId===a.fileId;})+1;
+  document.getElementById('tlbMeta').innerHTML=t.id+' &middot; Uploaded by '+(a.uploader||'?')+' &middot; '+fmtStamp(a.ts)+' &middot; '+pos+' / '+imgs.length;
 }
 function tLbNav(d){
   var t=tickets.find(function(x){return x.id===tLb.id;});if(!t)return;
-  tLb.i=(tLb.i+d+t.attachments.length)%t.attachments.length;tShowLb();
+  var idx=[];
+  t.attachments.forEach(function(a,i){ if(attKind(a)==='image') idx.push(i); });
+  if(idx.length<2)return;
+  var at=idx.indexOf(tLb.i);
+  tLb.i=idx[(at+d+idx.length)%idx.length];
+  tShowLb();
 }
 function tCloseLb(){document.getElementById('tLightbox').classList.remove('open');}
 document.getElementById('tlbX').addEventListener('click',tCloseLb);
