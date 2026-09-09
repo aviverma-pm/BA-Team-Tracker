@@ -398,6 +398,108 @@ td{padding:12px 15px;font-size:13px;vertical-align:middle}
 .af-i{font-size:26px;line-height:1}
 .af-b{font-size:8px;font-weight:800;letter-spacing:.7px;text-transform:uppercase}
 .af-n{font-size:9px;font-weight:600;color:var(--tx2);line-height:1.2;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:100%}
+
+/* ===== v6: 7-STAGE PIPELINE — compact ===== */
+.board{display:grid;grid-template-columns:repeat(7,minmax(178px,1fr));gap:8px;overflow-x:auto;padding-bottom:20px}
+@media (max-width:1360px){.board{grid-template-columns:repeat(7,178px)}}
+.col{background:var(--sf);border-radius:11px;padding:8px 8px 10px;min-height:280px;border:1px solid var(--bd);box-shadow:var(--sh);transition:all 0.18s;border-top:3px solid var(--sccol,#6b7280);display:flex;flex-direction:column}
+.col.legacy-col{background:#fafafa;border-style:dashed;opacity:0.85;border-top-style:solid}
+.col .colhd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:2px 4px 8px;border-bottom:1px solid var(--bd)}
+.col .collbl{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;color:var(--tx);letter-spacing:-0.1px;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.col .colcnt{background:var(--sf3);color:var(--tx2);border-radius:20px;padding:1px 8px;font-size:10px;font-weight:800;box-shadow:none;flex-shrink:0}
+.stg-num{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;background:var(--sccol,#6b7280);color:#fff;border-radius:50%;font-size:9px;font-weight:800;margin-right:2px;flex-shrink:0}
+.stg-of{font-size:9px;color:var(--tx3);font-weight:700;letter-spacing:0.3px;margin-left:3px;text-transform:uppercase}
+/* Compact card override for 7-column layout */
+.col .ticket{background:var(--tbg);border:1px solid var(--bd);border-left:3px solid var(--tc,#6b7280);border-radius:8px;margin-bottom:7px;cursor:pointer;transition:all 0.18s;position:relative;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,0.03);padding:8px 9px}
+.col .ticket:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.09);border-color:var(--bd2)}
+.col .ticket.done-card{opacity:0.6}
+.col .ticket.done-card .ttl-c{text-decoration:line-through;color:var(--tx3)}
+.col .ticket .tcover{display:none}
+.col .ticket .tbody{padding:0}
+.tcard-top{display:flex;align-items:center;justify-content:space-between;gap:5px;margin-bottom:5px}
+.tcard-id{font-size:9.5px;font-weight:800;color:var(--tx3);letter-spacing:0.3px}
+.tcard-prio{font-size:9px;font-weight:800;padding:1px 6px;border-radius:20px;letter-spacing:0.2px;text-transform:uppercase;line-height:1.4}
+.tcard-prio.ph{background:#ffeceb;color:#c1362d}
+.tcard-prio.pu{background:#ffdad6;color:#a52514}
+.tcard-prio.pm{background:#fff5db;color:#8a6d1c}
+.tcard-prio.pl{background:#dcfff1;color:#0f6e3e}
+.ttl-c{font-size:12px;font-weight:600;line-height:1.35;color:var(--tx);margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.tcard-badges{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:6px}
+.tcard-badge{font-size:8.5px;font-weight:700;padding:1.5px 6px;border-radius:4px;letter-spacing:0.2px;line-height:1.4}
+.tcard-badge.rt{background:rgba(130,112,219,0.12);color:#6b4fc4}
+.tcard-badge.dl{background:#e9f2ff;color:var(--blue)}
+.tcard-badge.jira{background:#e9f2ff;color:var(--blue);text-decoration:none;display:inline-flex;align-items:center;gap:2px}
+.tcard-badge.jira:hover{background:#cce0ff}
+.tcard-badge.rej{background:#ffeceb;color:var(--red)}
+.tcard-badge.live{background:#dcfff1;color:#0f6e3e}
+.tcard-foot{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.tcard-meta{display:flex;align-items:center;gap:7px;font-size:9.5px;color:var(--tx3);font-weight:600;min-width:0;flex:1}
+.tcard-meta span{display:inline-flex;align-items:center;gap:2px;white-space:nowrap}
+.tcard-av{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#fff;flex-shrink:0;border:1.5px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,0.06)}
+.col .ecol{color:var(--tx3);font-size:11px;text-align:center;padding:24px 6px;border:1.5px dashed var(--bd);border-radius:9px;margin-top:2px;font-weight:600;background:transparent}
+.col.drag-over{background:#eff6ff}
+.col.drag-over .ecol{border-color:var(--blue);color:var(--blue)}
+/* Dragging card */
+.ticket.dragging{opacity:0.4;transform:scale(0.94) rotate(1.5deg);box-shadow:var(--shlg)}
+
+/* Legacy badge on Legacy column tickets (no stage color) */
+.col.legacy-col .ticket{border-left-color:#94a3b8}
+
+/* Stage accordion styles unchanged below */
+
+/* Stage accordion in detail modal */
+.pl-acc{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.pl-item{background:var(--sf2);border:1px solid var(--bd);border-radius:12px;overflow:hidden;transition:all 0.2s}
+.pl-item.current{border-color:var(--blue);box-shadow:0 0 0 3px var(--bluglow);background:#fff}
+.pl-item.done{background:#f0fdf4;border-color:#bbf7d0}
+.pl-item.future{opacity:0.55}
+.pl-head{display:flex;align-items:center;gap:11px;padding:12px 14px;cursor:pointer;user-select:none}
+.pl-head .pl-num{width:26px;height:26px;border-radius:50%;background:var(--sf3);color:var(--tx2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.pl-item.current .pl-head .pl-num{background:var(--blue);color:#fff}
+.pl-item.done .pl-head .pl-num{background:#22c55e;color:#fff}
+.pl-name{flex:1;font-size:13px;font-weight:700;color:var(--tx)}
+.pl-owner{font-size:10px;color:var(--tx3);font-weight:600;margin-top:2px}
+.pl-status{font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:0.4px}
+.pl-status.current{background:#dbeafe;color:var(--blue)}
+.pl-status.done{background:#dcfff1;color:#0f6e3e}
+.pl-status.future{background:var(--sf3);color:var(--tx3)}
+.pl-status.rejected{background:#ffeceb;color:var(--red)}
+.pl-chev{color:var(--tx3);font-size:11px;transition:transform 0.2s}
+.pl-item.open .pl-chev{transform:rotate(180deg)}
+.pl-body{padding:0 14px 14px;display:none;font-size:12.5px;color:var(--tx)}
+.pl-item.open .pl-body{display:block}
+.pl-field{margin-bottom:11px}
+.pl-field label{display:block;font-size:10px;color:var(--tx2);font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px}
+.pl-field .pl-val{background:#fff;border:1px solid var(--bd);border-radius:8px;padding:8px 11px;font-size:12.5px;color:var(--tx);min-height:34px;line-height:1.5;white-space:pre-wrap}
+.pl-field .pl-val.empty{color:var(--tx3);font-style:italic}
+.pl-field input.pl-ip,.pl-field select.pl-ip,.pl-field textarea.pl-ip{width:100%;background:#fff;border:1px solid var(--bd);border-radius:8px;padding:8px 11px;font-family:inherit;font-size:12.5px;color:var(--tx);outline:none;transition:all 0.15s}
+.pl-field input.pl-ip:focus,.pl-field select.pl-ip:focus,.pl-field textarea.pl-ip:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--bluglow)}
+.pl-field textarea.pl-ip{resize:vertical;min-height:60px}
+.pl-field .pl-hint{font-size:10px;color:var(--tx3);margin-top:3px;font-weight:500}
+.pl-field .pl-hint.err{color:var(--red);font-weight:700}
+.pl-multi{display:flex;flex-wrap:wrap;gap:5px;padding:6px 6px;background:#fff;border:1px solid var(--bd);border-radius:8px;min-height:34px}
+.pl-multi .chip{padding:3px 10px;border-radius:14px;background:var(--sf3);color:var(--tx);font-size:11px;font-weight:600;display:inline-flex;align-items:center;gap:5px;cursor:default}
+.pl-multi .chip .rm{color:var(--tx3);cursor:pointer;font-size:12px}
+.pl-multi .chip .rm:hover{color:var(--red)}
+.pl-checkline{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--bd);border-radius:8px;padding:8px 11px}
+.pl-checkline input{width:18px;height:18px;cursor:pointer;accent-color:var(--blue)}
+.pl-checkline label{font-size:12.5px;font-weight:500;color:var(--tx);flex:1;cursor:pointer;text-transform:none;letter-spacing:0}
+.pl-checkitem{display:flex;align-items:flex-start;gap:8px;padding:6px 0;font-size:12px;color:var(--tx)}
+.pl-checkitem.ticked{color:#0f6e3e}
+.pl-checkitem .m{margin-right:4px}
+.pl-adv-row{display:flex;align-items:center;gap:10px;padding-top:12px;margin-top:8px;border-top:1px dashed var(--bd);flex-wrap:wrap}
+.pl-btn-adv{background:var(--blue);color:#fff;border:none;border-radius:9px;padding:9px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:all 0.18s}
+.pl-btn-adv:hover:not(:disabled){background:var(--bludk);transform:translateY(-1px)}
+.pl-btn-adv:disabled{opacity:0.42;cursor:not-allowed}
+.pl-missing{font-size:11px;color:var(--tx3);font-weight:600}
+.pl-missing.err{color:var(--red)}
+.pl-save-btn{background:var(--sf);color:var(--blue);border:1px solid var(--bd);border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit}
+.pl-save-btn:hover{background:var(--sf3)}
+.pl-rej-banner{background:#fff5f5;border-left:3px solid var(--red);color:var(--red);padding:9px 12px;border-radius:8px;font-size:12px;font-weight:600;margin-bottom:12px}
+.pl-rej-banner .r-label{font-weight:800;text-transform:uppercase;letter-spacing:0.4px;font-size:10px;display:block;margin-bottom:3px}
+
+.me-picker{background:var(--sf2);border:1px solid var(--bd);border-radius:8px;padding:6px 10px;display:inline-flex;align-items:center;gap:7px;font-size:11px}
+.me-picker select{background:transparent;border:none;outline:none;font-family:inherit;font-size:12px;font-weight:600;color:var(--tx);cursor:pointer}
 </style>
 </head>
 <body>
@@ -414,6 +516,7 @@ td{padding:12px 15px;font-size:13px;vertical-align:middle}
   <div class="hdr">
     <a href="verification.html" style="text-decoration:none;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;padding:6px 13px;border-radius:20px;font-size:12px;font-weight:600;transition:all 0.15s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.15)'">&#128206; Verifications</a>
     <div class="spill"><div class="sdot" id="sdot"></div><span id="slbl">Synced</span></div>
+    <div class="me-picker" id="mePicker" title="Your identity — required for advancing stages and ticking checks"><span style="opacity:0.8">&#128100;</span><select id="meSel"><option value="">Set identity</option></select></div>
     <div class="avrow" id="avrow"></div>
     <div class="ibtn" id="btnAct" title="Activity log">&#128203;</div>
     <div class="ibtn" id="btnSpr" title="Sprints">&#127939;</div>
@@ -564,31 +667,39 @@ td{padding:12px 15px;font-size:13px;vertical-align:middle}
 <div class="ov" id="ovNew">
 <div class="modal">
   <div class="mx" id="mxNew">&#x2715;</div>
-  <div class="mttl">&#10022; New Ticket</div>
+  <div class="mttl">&#10022; New Ticket <span style="font-size:11px;color:var(--tx3);font-weight:500;margin-left:6px">Stage 1: Intake</span></div>
   <div class="fg"><label class="fl">Title</label><input class="fi" id="ftitle" placeholder="e.g. Revenue dashboard — monthly SQL + YoY"></div>
+  <!-- v6: INTAKE fields — all mandatory -->
   <div class="frow">
-    <div class="fg"><label class="fl">Assignee</label><select class="fs" id="fassignee"></select></div>
-    <div class="fg"><label class="fl">Priority</label><select class="fs" id="fpriority"><option value="High">&#128293; High</option><option value="Medium" selected>&#9889; Medium</option><option value="Low">&#127807; Low</option></select></div>
+    <div class="fg"><label class="fl">Requester *</label><select class="fs" id="frequester"><option value="">— Select —</option><option value="External">External</option></select></div>
+    <div class="fg"><label class="fl">Priority *</label><select class="fs" id="fpriority"><option value="Urgent">&#128308; Urgent</option><option value="High">&#128293; High</option><option value="Medium" selected>&#9889; Medium</option><option value="Low">&#127807; Low</option></select></div>
   </div>
   <div class="frow">
+    <div class="fg"><label class="fl">Assigned Owner *</label><select class="fs" id="fassignee"></select></div>
+    <div class="fg"><label class="fl">Peer Reviewer * <span style="color:var(--tx3);font-weight:400">(must differ)</span></label><select class="fs" id="freviewer"></select></div>
+  </div>
+  <div class="frow">
+    <div class="fg"><label class="fl">Deadline *</label><input type="date" class="fi" id="fdeadline"></div>
     <div class="fg"><label class="fl">Task Type</label><select class="fs" id="ftype"></select></div>
-    <div class="fg"><label class="fl">Report Type <span style="color:var(--tx3);font-weight:400">(optional)</span></label>
+  </div>
+  <div class="fg"><label class="fl">Business Goal * <span style="color:var(--tx3);font-weight:400">(max 200 chars)</span></label><input class="fi" id="fbizgoal" maxlength="200" placeholder="e.g. Track weekly OTA revenue vs direct bookings for Q4 pricing decisions"></div>
+  <div class="frow">
+    <div class="fg"><label class="fl">Report Type</label>
       <select class="fs" id="freporttype">
-        <option value="">&#8212; Not Applicable &#8212;</option>
+        <option value="">&#8212; N/A &#8212;</option>
         <option value="Admin">Admin</option>
         <option value="Super Admin">Super Admin</option>
         <option value="Both">Both</option>
       </select></div>
+    <div class="fg"><label class="fl">Sprint</label><select class="fs" id="fsprint"><option value="">&#8212; No Sprint &#8212;</option></select></div>
   </div>
-  <div class="fg"><label class="fl">Sprint</label><select class="fs" id="fsprint"><option value="">&#8212; No Sprint &#8212;</option></select></div>
-  <div class="fg"><label class="fl">Current Stage</label><div class="stgsel" id="stgsel"></div></div>
   <div class="frow">
     <div class="fg"><label class="fl">Jira ID</label><input class="fi" id="fjiraid" placeholder="DATA-142"></div>
-    <div class="fg"><label class="fl">Jira URL</label><input class="fi" id="fjiraurl" placeholder="https://hotelogix.atlassian.net/browse/..."></div>
+    <div class="fg"><label class="fl">Jira URL</label><input class="fi" id="fjiraurl" placeholder="https://..."></div>
   </div>
-  <div class="fg"><label class="fl">Dev Dependency?</label><select class="fs" id="fdep"><option value="false">No</option><option value="true">Yes &#8212; waiting on dev</option></select></div>
-  <div class="fg"><label class="fl">Description</label><textarea class="fta" id="fdesc" placeholder="Mat view, report link, context..."></textarea></div>
-  <button class="btn btn-p" id="btnCreate" style="width:100%;padding:10px;font-size:14px;border-radius:10px;justify-content:center;margin-top:6px">Create Ticket</button>
+  <div class="fg"><label class="fl">Additional Context</label><textarea class="fta" id="fdesc" placeholder="Mat view, references, background..."></textarea></div>
+  <div id="fCreateHint" style="font-size:11px;color:var(--tx3);margin-bottom:8px"></div>
+  <button class="btn btn-p" id="btnCreate" style="width:100%;padding:10px;font-size:14px;border-radius:10px;justify-content:center;margin-top:6px">Create &amp; enter Discovery</button>
 </div>
 </div>
 
@@ -622,6 +733,15 @@ td{padding:12px 15px;font-size:13px;vertical-align:middle}
     <div class="fg"><label class="fl">Sprint</label><select class="fs" id="efsprint"><option value="">&#8212; No Sprint &#8212;</option></select></div>
     <div class="fg"><label class="fl">Dev Dependency?</label>
       <select class="fs" id="efdep"><option value="false">No</option><option value="true">Yes &#8212; waiting on dev</option></select></div>
+  </div>
+  <!-- v6: intake fields editable while at intake stage -->
+  <div class="frow">
+    <div class="fg"><label class="fl">Requester</label><select class="fs" id="efrequester"><option value="">— Select —</option></select></div>
+    <div class="fg"><label class="fl">Peer Reviewer</label><select class="fs" id="efreviewer"><option value="">— Select —</option></select></div>
+  </div>
+  <div class="frow">
+    <div class="fg"><label class="fl">Deadline</label><input type="date" class="fi" id="efdeadline"></div>
+    <div class="fg"><label class="fl">Business Goal</label><input class="fi" id="efbizgoal" maxlength="200"></div>
   </div>
   <div class="frow">
     <div class="fg"><label class="fl">Jira ID</label><input class="fi" id="efjiraid" placeholder="DATA-142"></div>
@@ -755,6 +875,92 @@ const D = {
   types:['SQL Query','Jinja Templating','Filter Setup','Debug / Report Fix','L4 Resolution','Data Authenticity Check','Dev Dependency Request','Dashboard Build','Comparative Analysis','Other'],
 };
 
+// ===== v6: 7-STAGE PIPELINE — must match Code.gs =====
+const PIPELINE_STAGES=['intake','discovery','build','self_verify','peer_verify','uat','live'];
+const STAGE_LABELS={intake:'Intake',discovery:'Discovery',build:'Build',self_verify:'Self-Verify',peer_verify:'Peer-Verify',uat:'UAT',live:'Live'};
+// Compact labels for the tight kanban column headers
+const STAGE_LABELS_SHORT={intake:'Intake',discovery:'Discovery',build:'Build',self_verify:'Self-Verify',peer_verify:'Peer Review',uat:'UAT',live:'Live'};
+const STAGE_COLORS={intake:'#6b7280',discovery:'#3b82f6',build:'#8b5cf6',self_verify:'#22d3ee',peer_verify:'#a78bfa',uat:'#fbbf24',live:'#34d399',legacy:'#94a3b8'};
+const STAGE_OWNERS={intake:'requester',discovery:'assignee',build:'assignee',self_verify:'assignee',peer_verify:'reviewer',uat:'requester',live:'assignee'};
+const STAGE_CHECKS_DEF={
+  self_verify:[
+    {key:'row_count',label:'Row count matches source table for a known period'},
+    {key:'reconcile',label:'Total reconciled with existing trusted report'},
+    {key:'filters',label:'All filters tested (date, hotel, category, etc.)'},
+    {key:'edge_cases',label:'Edge cases handled (NULLs, zero-booking hotels, cancelled bookings)'},
+    {key:'timezone',label:'Timezone applied consistently'},
+    {key:'historical',label:'Historical spot-check matches known past number'},
+    {key:'performance',label:'Query runs in acceptable time'},
+  ],
+  peer_verify:[
+    {key:'sql_logic',label:'SQL logic reviewed — joins and grouping correct'},
+    {key:'spot_check',label:'Spot-checked at least 3 rows against raw table'},
+    {key:'filter_combos',label:'Filter combinations tested independently'},
+    {key:'performance',label:'Query performance acceptable'},
+    {key:'documentation',label:'Documentation & naming follow standard'},
+  ],
+};
+const DASHBOARD_NAME_RE=/^[A-Za-z0-9]+_[A-Za-z0-9]+_[A-Za-z0-9]+$/;
+
+// v6: team emails for session-based validation
+const TEAM_EMAILS_MAP={
+  'Nihal':'nihal.singh@hotelogix.com',
+  'Abhishek':'abhishek.sharma@hotelogix.com',
+  'Harikewal':'harikewal.kushwaha@hotelogix.com',
+  'Avi':'avi.verma@hotelogix.com',
+  'Dinesh':'dinesh.singh@hotelogix.com',
+};
+let myEmail=localStorage.getItem('hlx_myemail')||'';
+let stageChecks=[];
+
+function nextStage(s){const i=PIPELINE_STAGES.indexOf(s);return (i>=0&&i<PIPELINE_STAGES.length-1)?PIPELINE_STAGES[i+1]:null;}
+function isPipelineTicket(t){return t.pipelineStage && t.pipelineStage!=='legacy';}
+function nameForEmail(email){for(const n in TEAM_EMAILS_MAP)if(TEAM_EMAILS_MAP[n]===email)return n;return '';}
+
+// Compute what's missing for a ticket to advance from its current stage
+function computeStageMissing(t){
+  const st=t.pipelineStage; const missing=[]; const sd=t.stageData||{};
+  if(st==='intake'){
+    if(!t.requester)missing.push('Requester');
+    if(!t.assignee)missing.push('Assigned owner');
+    if(!t.reviewer)missing.push('Peer reviewer');
+    if(t.reviewer && t.assignee && t.reviewer===t.assignee)missing.push('Reviewer must differ from owner');
+    if(!t.priority)missing.push('Priority');
+    if(!t.deadline)missing.push('Deadline');
+    if(!t.businessGoal)missing.push('Business goal');
+  }else if(st==='discovery'){
+    const d=sd.discovery||{};
+    if(!d.existingReports||!d.existingReports.length)missing.push('Existing reports');
+    if(!d.tables||!d.tables.length)missing.push('Tables identified');
+    if(!d.dataSource)missing.push('Data source');
+    if(!d.stakeholders||!d.stakeholders.length)missing.push('Stakeholders');
+    if(!d.assumptions||!d.assumptions.length)missing.push('Assumptions & gaps');
+  }else if(st==='build'){
+    const b=sd.build||{};
+    if(!b.queryLink)missing.push('Query link');
+    if(!b.stagingUrl)missing.push('Staging URL');
+    if(!b.dashboardName)missing.push('Dashboard name');
+    else if(!DASHBOARD_NAME_RE.test(b.dashboardName))missing.push('Name must match [Scope]_[Domain]_[Metric]');
+    if(!b.sqlCommentConfirmed)missing.push('SQL purpose+owner comment');
+  }else if(st==='self_verify'){
+    const defs=STAGE_CHECKS_DEF.self_verify;
+    const ticked=new Set(stageChecks.filter(c=>c.ticketId===t.id&&c.stage==='self_verify'&&c.ticked).map(c=>c.checkKey));
+    defs.forEach(d=>{if(!ticked.has(d.key))missing.push(d.label);});
+    const sv=sd.self_verify||{};
+    if(sv.reconDiffPct===undefined||sv.reconDiffPct===null||String(sv.reconDiffPct).trim()==='')missing.push('Reconciliation diff %');
+  }else if(st==='peer_verify'){
+    const defs=STAGE_CHECKS_DEF.peer_verify;
+    const ticked=new Set(stageChecks.filter(c=>c.ticketId===t.id&&c.stage==='peer_verify'&&c.ticked).map(c=>c.checkKey));
+    defs.forEach(d=>{if(!ticked.has(d.key))missing.push(d.label);});
+  }else if(st==='uat'){
+    const u=sd.uat||{};
+    if(!u.walkthroughDone)missing.push('Walkthrough done');
+    if(!u.signOffUrl)missing.push('Sign-off link');
+  }else if(st==='live'){missing.push('Already at final stage');}
+  else if(st==='legacy'){missing.push('Legacy ticket — not on pipeline');}
+  return missing;
+}
+
 let cfg=loadCfg(), tickets=[], sprints=[], activity=[], fMode='all', fAv='', selStg='', dailyLogs=[], profName='', profTab='timeline', teamPeriod='day', teamTab='eff';
 
 function loadCfg(){try{const s=localStorage.getItem('hlx4');if(s)return Object.assign({},D,JSON.parse(s));}catch(e){}return Object.assign({},D);}
@@ -797,6 +1003,7 @@ async function loadTickets(retry){
   try{
     const d=await apiFetch({action:'getAll'});
     tickets=d.tickets||[];
+    stageChecks=d.stageChecks||[];
     if(Array.isArray(d.dailyLogs))dailyLogs=d.dailyLogs;
     if(d.config){
       let changed=false;
@@ -829,9 +1036,9 @@ function getFiltered(){
   let list=[...tickets];
   const q=document.getElementById('srch').value.toLowerCase();
   if(q)list=list.filter(t=>(t.title||'').toLowerCase().includes(q)||(t.assignee||'').toLowerCase().includes(q)||(t.jiraId||'').toLowerCase().includes(q)||(t.id||'').toLowerCase().includes(q));
-  if(fMode==='blocked')list=list.filter(t=>t.dep===true||t.dep==='true');
-  if(fMode==='high')list=list.filter(t=>t.priority==='High');
-  if(fMode==='done')list=list.filter(t=>t.stage==='done'||t.done===true||t.done==='true');
+  if(fMode==='blocked')list=list.filter(t=>t.dep===true||t.dep==='true'||t.rejectionReason);
+  if(fMode==='high')list=list.filter(t=>t.priority==='High'||t.priority==='Urgent');
+  if(fMode==='done')list=list.filter(t=>t.pipelineStage==='live'||t.stage==='done'||t.done===true||t.done==='true');
   if(fMode==='mine'&&cfg.myName)list=list.filter(t=>t.assignee===cfg.myName);
   if(fAv)list=list.filter(t=>t.assignee===fAv);
   return list;
@@ -840,17 +1047,18 @@ function getFiltered(){
 function renderAll(){renderStats();renderSpBanner();renderKanban();renderTable();renderAvF();}
 
 function renderStats(){
-  const a=tickets,bl=a.filter(t=>t.dep===true||t.dep==='true').length,
-    dn=a.filter(t=>t.stage==='done'||t.done===true||t.done==='true').length,
-    hi=a.filter(t=>t.priority==='High'&&t.stage!=='done').length,
-    ip=a.filter(t=>['sql','jinja','filter','debug'].includes(t.stage)).length,
-    pct=a.length?Math.round(dn/a.length*100):0;
+  const a=tickets;
+  const live=a.filter(t=>t.pipelineStage==='live').length;
+  const inFlight=a.filter(t=>isPipelineTicket(t)&&t.pipelineStage!=='live'&&t.pipelineStage!=='intake').length;
+  const rej=a.filter(t=>t.rejectionReason).length;
+  const hi=a.filter(t=>(t.priority==='High'||t.priority==='Urgent')&&t.pipelineStage!=='live').length;
+  const pct=a.length?Math.round(live/a.length*100):0;
   const stats=[
-    {l:'Total',  v:a.length, s:'All tickets',    c:'#3b82f6',p:100},
-    {l:'Active', v:ip,       s:'In progress',    c:'#22d3ee',p:a.length?Math.round(ip/a.length*100):0},
-    {l:'Blocked',v:bl,       s:'Waiting on dev', c:'#fbbf24',p:a.length?Math.round(bl/a.length*100):0},
-    {l:'Critical',v:hi,      s:'High priority',  c:'#f87171',p:a.length?Math.round(hi/a.length*100):0},
-    {l:'Done',   v:dn,       s:pct+'% complete', c:'#34d399',p:pct},
+    {l:'Total',    v:a.length, s:'All tickets',       c:'#3b82f6',p:100},
+    {l:'In-Flight',v:inFlight, s:'Active pipeline',    c:'#22d3ee',p:a.length?Math.round(inFlight/a.length*100):0},
+    {l:'Rejected', v:rej,      s:'Peer-review sent back',c:'#f87171',p:a.length?Math.round(rej/a.length*100):0},
+    {l:'Critical', v:hi,       s:'High/Urgent',        c:'#fbbf24',p:a.length?Math.round(hi/a.length*100):0},
+    {l:'Live',     v:live,     s:pct+'% deployed',     c:'#34d399',p:pct},
   ];
   document.getElementById('stats').innerHTML=stats.map(s=>'<div class="sc" style="--sccol:'+s.c+'"><div class="slbl">'+s.l+'</div><div class="sval" style="color:'+s.c+'">'+s.v+'</div><div class="ssub">'+s.s+'</div><div class="sbar"><div class="sfill" style="width:'+s.p+'%;background:'+s.c+'"></div></div></div>').join('');
 }
@@ -875,57 +1083,46 @@ function renderAvF(){
   document.querySelectorAll('.avf').forEach(el=>el.addEventListener('click',function(){fAv=fAv===this.dataset.name?'':this.dataset.name;renderAll();}));
 }
 
+// v6: 7 columns for the pipeline stages
 function buildCols(){
-  const ids=cfg.stages.map(s=>s.id);
-  const done=ids.filter(id=>id==='done'||id==='review');
-  const dep=ids.filter(id=>id==='dep');
-  const todo=ids.filter(id=>id==='todo');
-  const wip=ids.filter(id=>!done.includes(id)&&!dep.includes(id)&&!todo.includes(id));
-  return[
-    {label:'Backlog',    stages:todo.length?todo:[ids[0]], dropStage:'todo',    color:'#6b7280'},
-    {label:'In Progress',stages:wip,                       dropStage:wip[0]||'sql', color:'#3b82f6'},
-    {label:'Blocked',    stages:dep,                        dropStage:'dep',     color:'#fbbf24'},
-    {label:'Done',       stages:done,                       dropStage:'done',    color:'#34d399'},
-  ];
+  return PIPELINE_STAGES.map((sid,i)=>({
+    stage:sid,
+    label:STAGE_LABELS_SHORT[sid]||STAGE_LABELS[sid],
+    color:STAGE_COLORS[sid],
+    num:i+1,
+  }));
 }
 
 function renderKanban(){
-  const list=getFiltered(),cols=buildCols();
-  document.getElementById('board').innerHTML=cols.map(col=>{
-    let ct;
-    if(col.label==='Blocked'){
-      // Blocked = any ticket with dev dependency OR stage dep/blocked
-      ct=list.filter(t=>(t.dep===true||t.dep==='true'||t.stage==='dep'||t.stage==='blocked')&&t.stage!=='done'&&!(t.done===true||t.done==='true'));
-    }else if(col.label==='Done'){
-      ct=list.filter(t=>(t.stage==='done'||t.done===true||t.done==='true'));
-    }else if(col.label==='Backlog'){
-      ct=list.filter(t=>col.stages.includes(t.stage)&&!(t.dep===true||t.dep==='true')&&!(t.done===true||t.done==='true'));
-    }else{
-      // In Progress — wip stages, not blocked, not done
-      ct=list.filter(t=>col.stages.includes(t.stage)&&!(t.dep===true||t.dep==='true')&&!(t.done===true||t.done==='true')&&t.stage!=='dep'&&t.stage!=='blocked');
-    }
-    // Map col to its primary stage id for drop target
-    const dropStage=col.dropStage||col.stages[0]||'todo';
-    return '<div class="col" data-dropstage="'+dropStage+'" style="--colaccent:'+col.color+'">'
-      +'<div class="colhd"><div class="collbl"><div class="coldot" style="background:'+col.color+'"></div>'+col.label+'</div><div class="colcnt">'+ct.length+'</div></div>'
+  const list=getFiltered().filter(t=>isPipelineTicket(t));
+  const legacyList=getFiltered().filter(t=>!isPipelineTicket(t));
+  const cols=buildCols();
+  let html=cols.map(col=>{
+    const ct=list.filter(t=>t.pipelineStage===col.stage);
+    return '<div class="col" data-dropstage="'+col.stage+'" style="--sccol:'+col.color+';--colaccent:'+col.color+'">'
+      +'<div class="colhd"><div class="collbl"><span class="stg-num" style="--sccol:'+col.color+'">'+col.num+'</span>'+col.label+'</div><div class="colcnt">'+ct.length+'</div></div>'
       +(ct.length?ct.map(tCard).join(''):'<div class="ecol">No tickets</div>')
       +'</div>';
   }).join('');
-  // Click to open detail
+  // Legacy pseudo-column (only if there are legacy tickets)
+  if(legacyList.length){
+    html+='<div class="col legacy-col" data-dropstage="legacy" style="--sccol:#94a3b8"><div class="colhd"><div class="collbl"><span class="stg-num" style="--sccol:#94a3b8">L</span>Legacy</div><div class="colcnt">'+legacyList.length+'</div></div>'
+      +legacyList.map(tCard).join('')+'</div>';
+  }
+  document.getElementById('board').innerHTML=html;
   document.querySelectorAll('.ticket').forEach(el=>el.addEventListener('click',function(e){
     if(e.target.classList.contains('jiraf')||e.target.closest('.jiraf'))return;
     openDetail(this.dataset.id);
   }));
-  // Drag & drop
   initDragDrop();
 }
 
+// v6: Sequential drag-drop — only allows dropping to next stage after validation
 function initDragDrop(){
   let dragId=null;
   document.querySelectorAll('.ticket').forEach(card=>{
     card.addEventListener('dragstart',function(e){
-      dragId=this.dataset.id;
-      this.classList.add('dragging');
+      dragId=this.dataset.id;this.classList.add('dragging');
       e.dataTransfer.effectAllowed='move';
     });
     card.addEventListener('dragend',function(){
@@ -935,72 +1132,89 @@ function initDragDrop(){
     });
   });
   document.querySelectorAll('.col').forEach(col=>{
-    col.addEventListener('dragover',function(e){
-      e.preventDefault();e.dataTransfer.dropEffect='move';
-      this.classList.add('drag-over');
-    });
+    col.addEventListener('dragover',function(e){e.preventDefault();e.dataTransfer.dropEffect='move';this.classList.add('drag-over');});
     col.addEventListener('dragleave',function(){this.classList.remove('drag-over');});
-    col.addEventListener('drop',function(e){
+    col.addEventListener('drop',async function(e){
       e.preventDefault();this.classList.remove('drag-over');
       if(!dragId)return;
-      let newStage=this.dataset.dropstage;
-      const colLabel=this.querySelector('.collbl')?this.querySelector('.collbl').textContent.trim():'';
-      const t=tickets.find(x=>x.id===dragId);
-      if(!t)return;
-      const oldStage=t.stage;
-      // Determine target based on which column
-      if(colLabel==='Blocked'){
-        t.dep=true; t.stage='dep'; t.done=false;
-      }else if(colLabel==='Done'){
-        t.dep=false; t.stage='done'; t.done=true;
-      }else if(colLabel==='Backlog'){
-        t.dep=false; t.stage='todo'; t.done=false;
-      }else{
-        // In Progress
-        t.dep=false; t.done=false;
-        t.stage=(oldStage==='done'||oldStage==='dep'||oldStage==='blocked'||oldStage==='todo')?'sql':oldStage;
+      const t=tickets.find(x=>x.id===dragId);if(!t)return;
+      const target=this.dataset.dropstage;
+      // Legacy column — no-op
+      if(target==='legacy' || !isPipelineTicket(t)){
+        toast('Legacy tickets are not on the pipeline');return;
       }
-      if(t.stage===oldStage&&String(t.dep)===String(t.dep)&&colLabel!=='Blocked'){renderAll();return;}
-      renderAll();
-      toast('Moved to '+colLabel);
-      apiFetch({action:'update',id:dragId,stage:t.stage,dep:String(t.dep),done:String(t.done)})
-        .catch(()=>{ss('error');toast('Sync failed',3000);});
+      // Same stage — no-op
+      if(target===t.pipelineStage) return;
+      // Only forward-adjacent moves allowed
+      const nxt=nextStage(t.pipelineStage);
+      if(target!==nxt){
+        toast('&#9888; Can only advance to the next stage ('+STAGE_LABELS[nxt||'—']+'). Use the detail view for other moves.',4200);
+        return;
+      }
+      // Validate readiness client-side
+      const missing=computeStageMissing(t);
+      if(missing.length){
+        toast('&#9888; Cannot advance — missing: '+missing.slice(0,2).join(', ')+(missing.length>2?' + '+(missing.length-2)+' more':''),4500);
+        return;
+      }
+      if(!myEmail){toast('&#9888; Set your identity (top header) before advancing',3500);return;}
+      // If moving to LIVE, prompt for production URL
+      let extra={};
+      if(t.pipelineStage==='uat'){
+        const url=prompt('Production dashboard URL:','');
+        if(!url){toast('Production URL required');return;}
+        extra.productionUrl=url;
+      }
+      try{
+        ss('syncing');
+        await apiFetch(Object.assign({action:'advanceStage',id:t.id,sessionEmail:myEmail},extra));
+        toast('&#10003; Advanced to '+STAGE_LABELS[nxt]);
+        logAct(t.id+' → '+STAGE_LABELS[nxt], STAGE_COLORS[nxt]);
+        loadTickets();
+      }catch(err){ss('error');toast('&#10007; '+(err.message||'Advance failed'),5000);}
     });
   });
 }
 
 function tCard(t){
-  const st=stgOf(t.stage),av=tmOf(t.assignee);
-  const si=cfg.stages.findIndex(s=>s.id===t.stage);
-  const prog=cfg.stages.length>1?Math.round(si/(cfg.stages.length-1)*100):0;
-  const isB=t.dep===true||t.dep==='true';
-  const isD=t.stage==='done'||t.done===true||t.done==='true';
-  const jira=t.jiraId?'<a class="jiraf" href="'+(t.jiraUrl||'#')+'" target="_blank" onclick="event.stopPropagation()">&#11041; '+t.jiraId+'</a>':'';
-  const spr=t.sprint?'<span style="font-size:9px;color:var(--tx3);font-weight:600;margin-left:4px">&#127939; '+t.sprint+'</span>':'';
-  const stagePill='<span class="stgb" style="background:'+st.color+'1e;color:'+st.color+'">'+st.label+'</span>';
-  const rtBadge=t.reportType?'<span style="display:inline-flex;align-items:center;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;margin-top:4px;margin-left:4px;background:rgba(130,112,219,0.12);color:#6b4fc4">'+t.reportType+'</span>':'';
-  const flags=(isD?'<span class="donef">&#10003; Done</span>':(isB?'<span class="depf">&#8987; Blocked</span>':''));
-  // Icon for the colored cover based on stage
-  const stageIcons={todo:'&#128203;',sql:'&#128190;',jinja:'&#9881;',filter:'&#128269;',debug:'&#128027;',dep:'&#8987;',review:'&#128064;',done:'&#10003;'};
-  const cicon=stageIcons[t.stage]||'&#128203;';
-  // Second gradient color — slightly shifted
-  const tc2=st.color;
-  // priority dot for cover
-  const prioDot=t.priority==='High'?'&#128293;':'';
-  return '<div class="ticket'+(isD?' done-card':'')+'" style="--tc:'+st.color+';--tc2:'+tc2+'" data-id="'+t.id+'" draggable="true">'
-    +'<div class="tcover" style="background:linear-gradient(120deg,'+st.color+','+st.color+'cc)"><span class="tcicon">'+cicon+'</span></div>'
+  const av=tmOf(t.assignee);
+  const isPipe=isPipelineTicket(t);
+  const pStage=isPipe?t.pipelineStage:'legacy';
+  const pColor=STAGE_COLORS[pStage]||'#6b7280';
+  const isD=pStage==='live'||t.done===true||t.done==='true';
+  // Priority pill + icon
+  const prioCls=t.priority==='Urgent'?'pu':(t.priority==='High'?'ph':(t.priority==='Medium'?'pm':'pl'));
+  const prioDot=t.priority==='Urgent'?'🔴':(t.priority==='High'?'🔥':'');
+  // Badges (only show what's set — keeps card slim)
+  const badges=[];
+  if(isD) badges.push('<span class="tcard-badge live">✓ Live</span>');
+  if(t.rejectionReason) badges.push('<span class="tcard-badge rej" title="'+String(t.rejectionReason).replace(/"/g,'&quot;')+'">↩ Rejected</span>');
+  if(t.reportType) badges.push('<span class="tcard-badge rt">'+t.reportType+'</span>');
+  if(t.jiraId) badges.push('<a class="tcard-badge jira" href="'+(t.jiraUrl||'#')+'" target="_blank" onclick="event.stopPropagation()">⎘ '+t.jiraId+'</a>');
+  // Meta footer — deadline + comments
+  const metaParts=[];
+  if(t.deadline){
+    const dl=new Date(t.deadline);
+    const now=new Date();
+    const overdue=!isD && !isNaN(dl) && dl < new Date(now.toDateString());
+    metaParts.push('<span style="color:'+(overdue?'var(--red)':'var(--tx3)')+'" title="Deadline '+t.deadline+'">📅 '+t.deadline.slice(5)+'</span>');
+  }
+  if(Array.isArray(t.comments)&&t.comments.length){
+    metaParts.push('<span>💬 '+t.comments.length+'</span>');
+  }
+  if(Array.isArray(t.attachments)&&t.attachments.length){
+    metaParts.push('<span>📎 '+t.attachments.length+'</span>');
+  }
+  return '<div class="ticket'+(isD?' done-card':'')+'" style="--tc:'+pColor+'" data-id="'+t.id+'" draggable="'+(isPipe?'true':'false')+'">'
     +'<div class="tbody">'
-    +'<div class="ttop"><span class="tid">'+t.id+'</span><span class="prio '+pcls(t.priority)+'">'+prioDot+' '+t.priority+'</span></div>'
-    +'<div class="ttl">'+t.title+'</div>'
-    +stagePill+flags+rtBadge+jira+spr
-    +'<div class="ptrack"><div class="pfill" style="width:'+prog+'%;background:linear-gradient(90deg,'+st.color+','+st.color+'aa)"></div></div>'
-    +'<div class="tfoot">'
-    +'<div class="tmeta">'
-    +(t.type?'<span>&#127991; '+t.type+'</span>':'')
-    +(Array.isArray(t.comments)&&t.comments.length?'<span>&#128172; '+t.comments.length+'</span>':'')
+    +'<div class="tcard-top"><span class="tcard-id">'+t.id+'</span><span class="tcard-prio '+prioCls+'">'+prioDot+' '+(t.priority||'').charAt(0)+'</span></div>'
+    +'<div class="ttl-c">'+t.title+'</div>'
+    +(badges.length?'<div class="tcard-badges">'+badges.join('')+'</div>':'')
+    +'<div class="tcard-foot">'
+    +'<div class="tcard-meta">'+metaParts.join('')+'</div>'
+    +'<div class="tcard-av" style="background:'+av.color+'" title="'+av.name+'">'+av.initials+'</div>'
     +'</div>'
-    +'<div class="tav" style="background:'+av.color+';color:#fff" title="'+av.name+'">'+av.initials+'</div>'
-    +'</div></div></div>';
+    +'</div></div>';
 }
 
 function renderTable(){
@@ -1042,12 +1256,25 @@ function openOv(id){document.getElementById(id).classList.add('open');}
 function closeOv(id){document.getElementById(id).classList.remove('open');}
 
 function openNewModal(){
-  document.getElementById('fassignee').innerHTML=cfg.team.map(m=>'<option>'+m.name+'</option>').join('');
+  const assigneeSel=document.getElementById('fassignee');
+  const reviewerSel=document.getElementById('freviewer');
+  const requesterSel=document.getElementById('frequester');
+  assigneeSel.innerHTML=cfg.team.map(m=>'<option>'+m.name+'</option>').join('');
+  reviewerSel.innerHTML='<option value="">— Select —</option>'+cfg.team.map(m=>'<option>'+m.name+'</option>').join('');
+  requesterSel.innerHTML='<option value="">— Select —</option>'+cfg.team.map(m=>'<option>'+m.name+'</option>').join('')+'<option value="External">External</option>';
+  // Filter reviewer to exclude currently-selected assignee
+  const updateReviewer=()=>{
+    const cur=assigneeSel.value;
+    const cr=reviewerSel.value;
+    reviewerSel.innerHTML='<option value="">— Select —</option>'+cfg.team.filter(m=>m.name!==cur).map(m=>'<option'+(m.name===cr?' selected':'')+'>'+m.name+'</option>').join('');
+  };
+  assigneeSel.onchange=updateReviewer;updateReviewer();
   document.getElementById('ftype').innerHTML=cfg.types.map(t=>'<option>'+t+'</option>').join('');
   document.getElementById('fsprint').innerHTML='<option value="">&#8212; No Sprint &#8212;</option>'+sprints.map(s=>'<option>'+s.name+'</option>').join('');
   const as=actSpr();if(as)document.getElementById('fsprint').value=as.name;
-  selStg=cfg.stages[0]?cfg.stages[0].id:'todo';
-  renderStgPills('stgsel',selStg);
+  // Default requester to current user if identified
+  if(myEmail){const n=nameForEmail(myEmail);if(n)requesterSel.value=n;}
+  document.getElementById('fCreateHint').textContent='';
   openOv('ovNew');
 }
 
@@ -1063,17 +1290,33 @@ function renderStgPills(cid,activeId){
 
 async function createTicket(){
   const title=document.getElementById('ftitle').value.trim();
-  if(!title){toast('&#9888; Please enter a title');return;}
+  const requester=document.getElementById('frequester').value;
+  const assignee=document.getElementById('fassignee').value;
+  const reviewer=document.getElementById('freviewer').value;
+  const deadline=document.getElementById('fdeadline').value;
+  const bizgoal=document.getElementById('fbizgoal').value.trim();
+  const hint=document.getElementById('fCreateHint');
+  const errs=[];
+  if(!title)errs.push('Title');
+  if(!requester)errs.push('Requester');
+  if(!reviewer)errs.push('Peer reviewer');
+  if(reviewer && reviewer===assignee)errs.push('Reviewer must differ from owner');
+  if(!deadline)errs.push('Deadline');
+  if(!bizgoal)errs.push('Business goal');
+  if(errs.length){hint.style.color='var(--red)';hint.textContent='Missing/invalid: '+errs.join(', ');return;}
+  hint.textContent='';
   const btn=document.getElementById('btnCreate');
   btn.disabled=true;btn.innerHTML='<span class="spin"></span> Saving...';
   const payload={action:'create',title,
-    assignee:document.getElementById('fassignee').value,
+    assignee,
     priority:document.getElementById('fpriority').value,
     type:document.getElementById('ftype').value,
     reportType:document.getElementById('freporttype').value,
-    stage:selStg,
+    stage:'todo',                        // legacy stage stays for backward-compat
+    pipelineStage:'intake',              // v6: starts at Intake
+    requester, reviewer, deadline,
+    businessGoal:bizgoal,
     desc:document.getElementById('fdesc').value,
-    dep:document.getElementById('fdep').value==='true',
     jiraId:document.getElementById('fjiraid').value.trim(),
     jiraUrl:document.getElementById('fjiraurl').value.trim(),
     sprint:document.getElementById('fsprint').value,
@@ -1083,25 +1326,31 @@ async function createTicket(){
     tickets.unshift(d.ticket);
     logAct('Created '+d.ticket.id+': '+title,'#3b82f6');
     renderAll();closeOv('ovNew');
-    ['ftitle','fdesc','fjiraid','fjiraurl'].forEach(x=>document.getElementById(x).value='');
-    toast('&#10003; Ticket created');
-  }catch(e){toast('&#10007; '+e.message,5000);}
-  btn.disabled=false;btn.textContent='Create Ticket';
+    ['ftitle','fdesc','fjiraid','fjiraurl','fbizgoal'].forEach(x=>document.getElementById(x).value='');
+    document.getElementById('fdeadline').value='';
+    toast('&#10003; Ticket created — at Intake stage');
+  }catch(e){toast('&#10007; '+e.message,5000);hint.style.color='var(--red)';hint.textContent=e.message;}
+  btn.disabled=false;btn.textContent='Create & enter Discovery';
 }
 
 function openDetail(id){
   const t=tickets.find(x=>x.id===id);if(!t)return;
-  const st=stgOf(t.stage),av=tmOf(t.assignee);
-  const si=cfg.stages.findIndex(s=>s.id===t.stage);
-  const isB=t.dep===true||t.dep==='true';
-  const isD=t.stage==='done'||t.done===true||t.done==='true';
+  const av=tmOf(t.assignee);
+  const isPipe=isPipelineTicket(t);
+  const pStage=t.pipelineStage||'legacy';
+  const pIdx=isPipe?PIPELINE_STAGES.indexOf(pStage):-1;
+  const pColor=STAGE_COLORS[pStage]||'#6b7280';
+  const isD=pStage==='live'||t.done===true||t.done==='true';
   const comments=Array.isArray(t.comments)?t.comments:[];
 
-  const dsbar=cfg.stages.map((s,i)=>'<div class="dss'+(i<=si?' on':'')+'" style="background:'+(i<=si?s.color+'28':'rgba(255,255,255,0.02)')+';color:'+s.color+'">'+s.label+'</div>').join('');
-  const smove=cfg.stages.map(s=>'<div class="sopt" data-sid="'+s.id+'" data-sc="'+s.color+'" style="color:'+s.color+';border-color:'+(t.stage===s.id?s.color:'var(--bd)')+';background:'+(t.stage===s.id?s.color+'18':'transparent')+'">'+s.label+'</div>').join('');
+  // Legacy tickets still show the old stage bar; pipeline tickets show the 7-stage accordion instead
+  const dsbar=isPipe
+    ? '<div class="dsbar">'+PIPELINE_STAGES.map((s,i)=>'<div class="dss'+(i<=pIdx?' on':'')+'" style="background:'+(i<=pIdx?STAGE_COLORS[s]+'28':'rgba(255,255,255,0.02)')+';color:'+STAGE_COLORS[s]+'">'+STAGE_LABELS[s]+'</div>').join('')+'</div>'
+    : '<div class="dsbar">'+cfg.stages.map((s,i)=>{const si=cfg.stages.findIndex(x=>x.id===t.stage);return '<div class="dss'+(i<=si?' on':'')+'" style="background:'+(i<=si?s.color+'28':'rgba(255,255,255,0.02)')+';color:'+s.color+'">'+s.label+'</div>';}).join('')+'</div>';
   const cmtHtml=comments.length?comments.map(c=>'<div class="cmt"><div class="cw">'+c.who+'<span class="cts">'+(c.ts||'')+'</span></div>'+c.text+'</div>').join(''):'<div style="font-size:12px;color:var(--tx3);padding:5px 0">No comments yet</div>';
   const jiraB=t.jiraId?'<div class="di"><div class="dl">Jira</div><div class="dv"><a class="jiraf" href="'+(t.jiraUrl||'#')+'" target="_blank">&#11041; '+t.jiraId+'</a></div></div>':'';
   const rtB=t.reportType?'<div class="di"><div class="dl">Report Type</div><div class="dv" style="color:#a78bfa">'+t.reportType+'</div></div>':'';
+  const stForDsbar={color:pColor,label:STAGE_LABELS[pStage]||pStage};
 
   // ── Verification screenshots (uploaded via the Verification Portal) ──
   const atts=Array.isArray(t.attachments)?t.attachments:[];
@@ -1132,30 +1381,38 @@ function openDetail(id){
     +'<a href="verification.html" style="font-weight:600;color:var(--blue);text-decoration:none;font-size:10px;margin-left:6px">+ Add</a>'
     +'</div>'+attGrid+'</div>';
 
+  // Rejection banner for pipeline tickets that were rejected at Peer-Verify
+  const rejBanner=(isPipe && t.rejectionReason)
+    ? '<div class="pl-rej-banner"><span class="r-label">&#8630; Peer-Verify Rejected — returned to Build</span>'+String(t.rejectionReason)+'</div>' : '';
+
+  // 7-stage accordion for pipeline tickets
+  const accordionHtml = isPipe ? buildStageAccordion(t) : '';
+
   document.getElementById('detailContent').innerHTML=
     '<div class="mx" id="mxDet">&#x2715;</div>'
     +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'
     +'<span style="font-size:10px;color:var(--tx3);font-weight:600">'+t.id+'</span>'
     +'<div style="display:flex;gap:6px;align-items:center">'
-    +(isD?'<button class="btn btn-d bsm" data-mkd="'+t.id+'" data-val="false">&#8617; Reopen</button>':'<button class="btn btn-s bsm" data-mkd="'+t.id+'" data-val="true">&#10003; Mark Done</button>')
     +'<button class="btn btn-g bsm" id="btnEditTicket">&#9998; Edit</button>'
     +'<button class="btn btn-d bsm" id="btnDelTicket">&#128465;</button>'
     +'<span class="prio '+pcls(t.priority)+'" style="padding:2px 10px;border-radius:5px;font-size:11px">'+t.priority+'</span></div></div>'
     +'<div style="font-size:17px;font-weight:700;letter-spacing:-0.3px;line-height:1.35;margin-bottom:4px'+(isD?';text-decoration:line-through;color:var(--tx3)':'')+'">' +t.title+'</div>'
-    +'<div class="dsbar">'+dsbar+'</div>'
-    +(isB?'<div class="depf" style="margin-bottom:10px;display:inline-flex">&#8987; Blocked &#8212; Waiting on Dev</div>':'')
-    +(isD?'<div class="donef" style="margin-bottom:10px;display:inline-flex">&#10003; Completed</div>':'')
+    +rejBanner
+    +dsbar
+    +(isD?'<div class="donef" style="margin-bottom:10px;display:inline-flex">&#10003; Live</div>':'')
     +'<div class="dg">'
     +'<div class="di"><div class="dl">Assignee</div><div class="dv" style="display:flex;align-items:center;gap:7px"><div class="tav" style="width:24px;height:24px;font-size:10px;background:'+av.color+'18;color:'+av.color+'">'+av.initials+'</div>'+av.name+'</div></div>'
-    +'<div class="di"><div class="dl">Type</div><div class="dv">'+(t.type||'—')+'</div></div>'
-    +'<div class="di"><div class="dl">Stage</div><div class="dv" style="color:'+st.color+'">'+st.label+'</div></div>'
-    +'<div class="di"><div class="dl">Sprint</div><div class="dv">'+(t.sprint||'—')+'</div></div>'
+    +(isPipe?'<div class="di"><div class="dl">Peer Reviewer</div><div class="dv">'+(t.reviewer||'—')+'</div></div>':'')
+    +'<div class="di"><div class="dl">Pipeline Stage</div><div class="dv" style="color:'+pColor+';font-weight:700">'+STAGE_LABELS[pStage]+(isPipe?' <span style="font-size:10px;color:var(--tx3);font-weight:500">('+(pIdx+1)+'/7)</span>':'')+'</div></div>'
+    +(isPipe?'<div class="di"><div class="dl">Requester</div><div class="dv">'+(t.requester||'—')+'</div></div>':'')
+    +(isPipe && t.deadline?'<div class="di"><div class="dl">Deadline</div><div class="dv">'+t.deadline+'</div></div>':'')
     +'<div class="di"><div class="dl">Created</div><div class="dv">'+t.created+'</div></div>'
     +(isD?'<div class="di"><div class="dl">Completed</div><div class="dv">'+(t.doneAt||t.updatedAt||'&#8212;')+'</div></div><div class="di"><div class="dl">Turnaround (TAT)</div><div class="dv" style="color:#1a9c5b;font-weight:700">'+tatLabel(t)+'</div></div>':'')
     +jiraB+rtB+'</div>'
-    +'<div style="margin-top:13px"><div class="fl">Description</div><div style="font-size:13px;color:var(--tx2);line-height:1.6;background:var(--sf);border-radius:8px;padding:10px 12px;border:1px solid var(--bd)">'+(t.desc||'No description.')+'</div></div>'
+    +(isPipe && t.businessGoal?'<div style="margin-top:13px"><div class="fl">Business Goal</div><div style="font-size:13px;color:var(--tx2);line-height:1.6;background:var(--sf);border-radius:8px;padding:10px 12px;border:1px solid var(--bd)">'+t.businessGoal+'</div></div>':'')
+    +(t.desc?'<div style="margin-top:13px"><div class="fl">Additional Context</div><div style="font-size:13px;color:var(--tx2);line-height:1.6;background:var(--sf);border-radius:8px;padding:10px 12px;border:1px solid var(--bd)">'+t.desc+'</div></div>':'')
     +attHtml
-    +'<div style="margin-top:13px"><div class="fl">Move Stage</div><div class="stgsel" id="stgmove">'+smove+'</div></div>'
+    +accordionHtml
     +'<div style="margin-top:13px"><div class="fl">Comments ('+comments.length+')</div><div class="cmtlist">'+cmtHtml+'</div>'
     +'<div class="crow"><select class="fs" id="cwho" style="width:130px;padding:7px 10px">'+cfg.team.map(m=>'<option>'+m.name+'</option>').join('')+'</select>'
     +'<input class="fi" id="ctext" placeholder="Add a comment..." style="flex:1"><button class="btn btn-p bsm" data-postcmt="'+t.id+'">Post</button></div></div>';
@@ -1197,13 +1454,222 @@ function openDetail(id){
       document.getElementById('confirmDelNo').onclick=function(){box.remove();};
     });
   }
-  // bind stage move
-  document.querySelectorAll('#stgmove .sopt').forEach(el=>el.addEventListener('click',function(){moveStage(t.id,this.dataset.sid);}));
+  // v6: bind accordion headers + save + advance buttons
+  bindStageAccordion(t);
   // bind post comment
   document.querySelectorAll('[data-postcmt]').forEach(el=>el.addEventListener('click',function(){postComment(this.dataset.postcmt);}));
   // bind edit
   const editBtn=document.getElementById('btnEditTicket');
   if(editBtn) editBtn.addEventListener('click',function(){closeOv('ovDetail');openEditModal(t.id);});
+}
+
+// ===================================================================
+// v6: 7-STAGE ACCORDION for detail modal
+// ===================================================================
+function buildStageAccordion(t){
+  const pStage=t.pipelineStage;
+  const pIdx=PIPELINE_STAGES.indexOf(pStage);
+  const sd=t.stageData||{};
+
+  const items=PIPELINE_STAGES.map((sid,i)=>{
+    let status='future', cls='future';
+    if(i<pIdx){status='done';cls='done';}
+    else if(i===pIdx){status='current';cls='current';}
+    const rejHere=(t.rejectionReason && sid==='peer_verify' && i<=pIdx);
+    if(rejHere) status='rejected';
+    const openCls=(i===pIdx)?'open':'';
+    return '<div class="pl-item '+cls+' '+openCls+'" data-stage="'+sid+'">'
+      +'<div class="pl-head" data-toggle="'+sid+'">'
+      +'<div class="pl-num">'+(i+1)+'</div>'
+      +'<div class="pl-name">'+STAGE_LABELS[sid]+'<div class="pl-owner">Owner: '+STAGE_OWNERS[sid]+'</div></div>'
+      +'<span class="pl-status '+status+'">'+(status==='current'?'Current':status==='done'?'Done':status==='rejected'?'Rejected':'Pending')+'</span>'
+      +'<span class="pl-chev">&#9662;</span>'
+      +'</div>'
+      +'<div class="pl-body">'+buildStageBody(t,sid,sd,i===pIdx)+'</div>'
+      +'</div>';
+  }).join('');
+  return '<div class="pl-acc" id="plAcc"><div class="fl" style="margin-bottom:6px">Pipeline (7 stages)</div>'+items+'</div>';
+}
+
+function buildStageBody(t,sid,sd,isCurrent){
+  const editable = isCurrent; // only current stage's fields are editable
+  let body='';
+  if(sid==='intake'){
+    body+=field('Requester',t.requester);
+    body+=field('Assigned Owner',t.assignee);
+    body+=field('Peer Reviewer',t.reviewer);
+    body+=field('Priority',t.priority);
+    body+=field('Deadline',t.deadline);
+    body+=field('Business Goal',t.businessGoal);
+    body+='<div class="pl-hint">To edit these, use the &#9998; Edit button at the top.</div>';
+  }else if(sid==='discovery'){
+    const d=sd.discovery||{};
+    if(editable){
+      body+=multilineField('discovery','existingReports','Existing reports referenced (one per line)', d.existingReports);
+      body+=multilineField('discovery','tables','Tables identified (one per line)', d.tables);
+      body+=selectField('discovery','dataSource','Data source', d.dataSource,['','BigQuery','StarRocks','MySQL','Other']);
+      body+=multilineField('discovery','stakeholders','Stakeholders consulted (one per line)', d.stakeholders);
+      body+=multilineField('discovery','assumptions','Assumptions & gaps (one per line)', d.assumptions);
+      body+=saveButton('discovery');
+    }else{
+      body+=field('Existing reports',(d.existingReports||[]).join('\n'));
+      body+=field('Tables',(d.tables||[]).join('\n'));
+      body+=field('Data source',d.dataSource);
+      body+=field('Stakeholders',(d.stakeholders||[]).join(', '));
+      body+=field('Assumptions',(d.assumptions||[]).join('\n'));
+    }
+  }else if(sid==='build'){
+    const b=sd.build||{};
+    if(editable){
+      body+=inputField('build','queryLink','Query link (Git / doc URL)',b.queryLink);
+      body+=inputField('build','stagingUrl','Staging dashboard URL',b.stagingUrl);
+      body+=inputField('build','dashboardName','Dashboard name (must match [Scope]_[Domain]_[Metric])',b.dashboardName);
+      body+='<div class="pl-field"><label>SQL header comment</label><div class="pl-checkline"><input type="checkbox" id="pl-build-sqlCommentConfirmed"'+(b.sqlCommentConfirmed?' checked':'')+'><label for="pl-build-sqlCommentConfirmed">I confirm the SQL includes a purpose + owner header comment</label></div></div>';
+      body+=saveButton('build');
+    }else{
+      body+=field('Query link',b.queryLink);
+      body+=field('Staging URL',b.stagingUrl);
+      body+=field('Dashboard name',b.dashboardName);
+      body+=field('SQL comment confirmed', b.sqlCommentConfirmed?'Yes':'No');
+    }
+  }else if(sid==='self_verify' || sid==='peer_verify'){
+    const defs=STAGE_CHECKS_DEF[sid];
+    const ticked=new Set(stageChecks.filter(c=>c.ticketId===t.id&&c.stage===sid&&c.ticked).map(c=>c.checkKey));
+    body+='<div class="pl-field"><label>'+(sid==='self_verify'?'Self-Verify checks':'Peer-Verify checks')+' — tick via <a href="verification.html" style="color:var(--blue)">Verification Portal</a></label>'
+      +'<div style="background:#fff;border:1px solid var(--bd);border-radius:8px;padding:9px 12px">'
+      +defs.map(d=>'<div class="pl-checkitem'+(ticked.has(d.key)?' ticked':'')+'"><span class="m">'+(ticked.has(d.key)?'&#9989;':'&#9744;')+'</span><span>'+d.label+'</span></div>').join('')
+      +'</div></div>';
+    if(sid==='self_verify'){
+      const sv=sd.self_verify||{};
+      body+=field('Reconciliation diff %',sv.reconDiffPct);
+    }
+    if(sid==='peer_verify' && t.rejectionReason && isCurrent===false){
+      body+='<div class="pl-hint err">Last rejection reason: '+t.rejectionReason+'</div>';
+    }
+  }else if(sid==='uat'){
+    const u=sd.uat||{};
+    if(editable){
+      body+='<div class="pl-field"><label>Requester walkthrough</label><div class="pl-checkline"><input type="checkbox" id="pl-uat-walkthroughDone"'+(u.walkthroughDone?' checked':'')+'><label for="pl-uat-walkthroughDone">Walkthrough with requester completed</label></div></div>';
+      body+=inputField('uat','signOffUrl','Sign-off link (email/chat/doc URL)',u.signOffUrl);
+      body+=multilineField('uat','changeRequests','Change requests raised (one per line — optional)', u.changeRequests);
+      body+=saveButton('uat');
+    }else{
+      body+=field('Walkthrough done',u.walkthroughDone?'Yes':'No');
+      body+=field('Sign-off link',u.signOffUrl);
+      body+=field('Change requests',(u.changeRequests||[]).join('\n'));
+    }
+  }else if(sid==='live'){
+    const l=sd.live||{};
+    body+=field('Production URL',l.productionUrl);
+    body+=field('Deployed at',l.deployedAt);
+    if(l.reminderSent) body+=field('7-day post-check','Reminder sent '+(l.reminderSentAt||''));
+  }
+
+  // Advance/reject row — only for current stage, only if not at final Live
+  if(isCurrent && sid!=='live'){
+    const missing=computeStageMissing(t);
+    const canAdv=missing.length===0;
+    body+='<div class="pl-adv-row">'
+      +'<button class="pl-btn-adv" id="plAdvBtn"'+(canAdv?'':' disabled')+' title="'+(canAdv?'All requirements met':'Missing: '+missing.slice(0,3).join(', '))+'">&#10141; Advance to '+(STAGE_LABELS[nextStage(sid)]||'—')+'</button>';
+    if(sid==='peer_verify'){
+      body+='<button class="pl-btn-adv" id="plRejBtn" style="background:#ffeceb;color:var(--red)">&#10005; Reject &amp; send back</button>';
+    }
+    body+='<span class="pl-missing'+(missing.length?' err':'')+'">'+(missing.length?missing.length+' item(s) pending':'All requirements met')+'</span>';
+    body+='</div>';
+    if(sid==='self_verify' || sid==='peer_verify'){
+      body+='<div class="pl-hint">Ticking checks and reconciliation diff are done in the <a href="verification.html" style="color:var(--blue)">Verification Portal</a>.</div>';
+    }
+  }
+  return body;
+}
+
+function field(label,val){
+  const isEmpty = val===undefined||val===null||val==='';
+  return '<div class="pl-field"><label>'+label+'</label><div class="pl-val'+(isEmpty?' empty':'')+'">'+(isEmpty?'—':String(val).replace(/</g,'&lt;'))+'</div></div>';
+}
+function inputField(stage,key,label,val){
+  return '<div class="pl-field"><label>'+label+'</label><input class="pl-ip" data-plsd="'+stage+':'+key+'" value="'+String(val||'').replace(/"/g,'&quot;')+'"></div>';
+}
+function selectField(stage,key,label,val,opts){
+  return '<div class="pl-field"><label>'+label+'</label><select class="pl-ip" data-plsd="'+stage+':'+key+'">'+opts.map(o=>'<option value="'+o+'"'+(val===o?' selected':'')+'>'+(o||'— select —')+'</option>').join('')+'</select></div>';
+}
+function multilineField(stage,key,label,val){
+  const txt=Array.isArray(val)?val.join('\n'):(val||'');
+  return '<div class="pl-field"><label>'+label+'</label><textarea class="pl-ip" data-plsd-multi="'+stage+':'+key+'">'+String(txt).replace(/</g,'&lt;')+'</textarea></div>';
+}
+function saveButton(stage){
+  return '<button class="pl-save-btn" data-plsave="'+stage+'">&#128190; Save '+STAGE_LABELS[stage]+' fields</button>';
+}
+
+function bindStageAccordion(t){
+  // Toggle accordion items
+  document.querySelectorAll('#plAcc [data-toggle]').forEach(el=>el.addEventListener('click',function(){
+    this.parentElement.classList.toggle('open');
+  }));
+  // Save handlers per stage
+  document.querySelectorAll('#plAcc [data-plsave]').forEach(el=>el.addEventListener('click',async function(){
+    const stage=this.dataset.plsave;
+    const data={};
+    document.querySelectorAll('#plAcc [data-plsd]').forEach(inp=>{
+      const [s,k]=inp.dataset.plsd.split(':');
+      if(s===stage) data[k]=inp.type==='checkbox'?inp.checked:inp.value.trim();
+    });
+    document.querySelectorAll('#plAcc [data-plsd-multi]').forEach(inp=>{
+      const [s,k]=inp.dataset.plsdMulti.split(':');
+      if(s===stage){
+        const arr=inp.value.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+        data[k]=arr;
+      }
+    });
+    // Grab any checkboxes with fixed ids
+    const cb=document.getElementById('pl-'+stage+'-sqlCommentConfirmed');
+    if(cb) data.sqlCommentConfirmed=cb.checked;
+    const cb2=document.getElementById('pl-'+stage+'-walkthroughDone');
+    if(cb2) data.walkthroughDone=cb2.checked;
+    try{
+      ss('syncing');
+      await apiFetch({action:'updateStageData',id:t.id,stage,dataJson:JSON.stringify(data)});
+      toast('&#10003; '+STAGE_LABELS[stage]+' saved');
+      loadTickets();
+    }catch(e){ss('error');toast('&#10007; '+e.message,4500);}
+  }));
+  // Advance
+  const advBtn=document.getElementById('plAdvBtn');
+  if(advBtn){
+    advBtn.addEventListener('click',async function(){
+      if(!myEmail){toast('&#9888; Set your identity (header) first');return;}
+      if(!confirm('Advance '+t.id+' to next stage?')) return;
+      let extra={};
+      if(t.pipelineStage==='uat'){
+        const url=prompt('Production dashboard URL:','');
+        if(!url){toast('Production URL required');return;}
+        extra.productionUrl=url;
+      }
+      try{
+        ss('syncing');
+        await apiFetch(Object.assign({action:'advanceStage',id:t.id,sessionEmail:myEmail},extra));
+        toast('&#10003; Advanced');
+        closeOv('ovDetail');
+        loadTickets();
+      }catch(e){ss('error');toast('&#10007; '+(e.message||'Advance failed'),5000);}
+    });
+  }
+  // Reject
+  const rejBtn=document.getElementById('plRejBtn');
+  if(rejBtn){
+    rejBtn.addEventListener('click',async function(){
+      if(!myEmail){toast('&#9888; Set your identity first');return;}
+      const reason=prompt('Rejection reason (required):','');
+      if(!reason || !reason.trim()){toast('&#9888; Reason required');return;}
+      try{
+        ss('syncing');
+        await apiFetch({action:'rejectPeer',id:t.id,reason:reason.trim(),sessionEmail:myEmail});
+        toast('&#10005; Rejected — returned to Build');
+        closeOv('ovDetail');
+        loadTickets();
+      }catch(e){ss('error');toast('&#10007; '+e.message,5000);}
+    });
+  }
 }
 
 async function markDone(id,isDone){
@@ -1263,6 +1729,11 @@ function openEditModal(id){
   document.getElementById('efdep').value=String(t.dep===true||t.dep==='true');
   document.getElementById('efreporttype').value=t.reportType||'';
   document.getElementById('efsprint').innerHTML='<option value="">— No Sprint —</option>'+sprints.map(s=>'<option'+(s.name===t.sprint?' selected':'')+'>'+s.name+'</option>').join('');
+  // v6: intake fields
+  document.getElementById('efrequester').innerHTML='<option value="">— Select —</option>'+cfg.team.map(m=>'<option'+(m.name===t.requester?' selected':'')+'>'+m.name+'</option>').join('')+'<option value="External"'+(t.requester==='External'?' selected':'')+'>External</option>';
+  document.getElementById('efreviewer').innerHTML='<option value="">— Select —</option>'+cfg.team.filter(m=>m.name!==t.assignee).map(m=>'<option'+(m.name===t.reviewer?' selected':'')+'>'+m.name+'</option>').join('');
+  document.getElementById('efdeadline').value=t.deadline||'';
+  document.getElementById('efbizgoal').value=t.businessGoal||'';
   openOv('ovEdit');
 }
 
@@ -1272,17 +1743,28 @@ async function saveEdit(){
   const btn=document.getElementById('btnSaveEdit');
   btn.disabled=true;btn.innerHTML='<span class="spin"></span> Saving...';
   const updates={
-    title:      document.getElementById('eftitle').value.trim(),
-    assignee:   document.getElementById('efassignee').value,
-    priority:   document.getElementById('efpriority').value,
-    type:       document.getElementById('eftype').value,
-    reportType: document.getElementById('efreporttype').value,
-    sprint:     document.getElementById('efsprint').value,
-    dep:        document.getElementById('efdep').value,
-    jiraId:     document.getElementById('efjiraid').value.trim(),
-    jiraUrl:    document.getElementById('efjiraurl').value.trim(),
-    desc:       document.getElementById('efdesc').value,
+    title:        document.getElementById('eftitle').value.trim(),
+    assignee:     document.getElementById('efassignee').value,
+    priority:     document.getElementById('efpriority').value,
+    type:         document.getElementById('eftype').value,
+    reportType:   document.getElementById('efreporttype').value,
+    sprint:       document.getElementById('efsprint').value,
+    dep:          document.getElementById('efdep').value,
+    jiraId:       document.getElementById('efjiraid').value.trim(),
+    jiraUrl:      document.getElementById('efjiraurl').value.trim(),
+    desc:         document.getElementById('efdesc').value,
+    // v6
+    requester:    document.getElementById('efrequester').value,
+    reviewer:     document.getElementById('efreviewer').value,
+    deadline:     document.getElementById('efdeadline').value,
+    businessGoal: document.getElementById('efbizgoal').value,
   };
+  if(updates.reviewer && updates.reviewer===updates.assignee){
+    toast('&#9888; Reviewer must differ from owner');
+    document.getElementById('btnSaveEdit').disabled=false;
+    document.getElementById('btnSaveEdit').textContent='Save Changes';
+    return;
+  }
   if(!updates.title){toast('&#9888; Title cannot be empty');btn.disabled=false;btn.textContent='Save Changes';return;}
   // Apply locally
   Object.assign(t, updates);
@@ -1949,6 +2431,26 @@ document.getElementById('mxCfg').addEventListener('click',function(){closeOv('ov
 sprints=loadSpr();
 activity=loadAct();
 applyConfig();
+
+// v6: populate the identity picker in the header
+function populateMePicker(){
+  const sel=document.getElementById('meSel');
+  if(!sel)return;
+  const teamNames=Object.keys(TEAM_EMAILS_MAP);
+  sel.innerHTML='<option value="">Set identity</option>'+teamNames.map(n=>{
+    const email=TEAM_EMAILS_MAP[n];
+    return '<option value="'+email+'"'+(myEmail===email?' selected':'')+'>'+n+'</option>';
+  }).join('');
+  sel.onchange=function(){
+    myEmail=this.value;
+    localStorage.setItem('hlx_myemail',myEmail);
+    const n=nameForEmail(myEmail);
+    if(n){cfg.myName=n;saveCfg();document.getElementById('mchip').style.display='';applyConfig();}
+    toast(myEmail?'&#128100; Identified as '+(n||myEmail):'&#128100; Identity cleared');
+  };
+}
+populateMePicker();
+
 renderAll();
 if(cfg.apiUrl)loadTickets();
 setInterval(function(){if(cfg.apiUrl)loadTickets();},60000);
