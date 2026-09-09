@@ -187,6 +187,66 @@ a.headlink:hover{background:rgba(255,255,255,0.15);opacity:1}
 .ff-size{font-size:9px;color:var(--tx3);font-weight:600}
 .file-face .img-del{opacity:0}
 .img-card:hover .file-face .img-del{opacity:1}
+
+/* ===== v6: STAGE CHECKLIST PANEL ===== */
+.cl-panel{background:var(--sf);border-radius:var(--r);padding:22px;margin-bottom:22px;box-shadow:var(--sh);border:1px solid var(--bd);display:none}
+.cl-panel.show{display:block}
+.cl-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.cl-title{font-size:16px;font-weight:800;letter-spacing:-0.3px;display:flex;align-items:center;gap:9px}
+.cl-title .stg-pill{font-size:10px;font-weight:800;letter-spacing:0.6px;padding:3px 10px;border-radius:20px;background:#e9f2ff;color:var(--blue);text-transform:uppercase}
+.cl-title .stg-pill.peer{background:#efeaff;color:#7c3aed}
+.cl-ctx{font-size:12px;color:var(--tx2);display:flex;align-items:center;gap:6px}
+.cl-ctx .tk-tid{font-size:11px;font-weight:800;color:var(--blue);letter-spacing:0.4px;background:#dbeafe;padding:3px 10px;border-radius:20px}
+.cl-lock{background:#fff8e1;border:1px solid #ffe082;color:#8a6d1c;font-size:11px;font-weight:600;padding:6px 12px;border-radius:8px;display:inline-flex;align-items:center;gap:6px;margin-bottom:12px}
+.cl-lock.locked{background:#ffeceb;border-color:#ffd5d2;color:var(--red)}
+.cl-lock.unlocked{background:#dcfff1;border-color:#b3f5d9;color:#0f6e3e}
+.cl-me{background:var(--sf2);border:1px solid var(--bd);border-radius:10px;padding:9px 13px;display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.cl-me label{font-size:11px;color:var(--tx2);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;flex-shrink:0}
+.cl-me select{background:transparent;border:none;outline:none;font-size:13px;font-weight:600;color:var(--tx);font-family:inherit;cursor:pointer;flex:1}
+
+.cl-progress{background:var(--sf3);height:6px;border-radius:20px;overflow:hidden;margin-bottom:14px}
+.cl-progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),#22d3ee);border-radius:20px;transition:width 0.35s}
+
+.cl-list{display:flex;flex-direction:column;gap:9px;margin-bottom:14px}
+.cl-row{background:var(--sf2);border:1px solid var(--bd);border-radius:12px;padding:12px 14px;transition:all 0.2s}
+.cl-row:hover:not(.locked){border-color:var(--bd2);background:#fff}
+.cl-row.ticked{background:#f0fdf4;border-color:#bbf7d0}
+.cl-row.locked{opacity:0.65;cursor:not-allowed}
+.cl-row-top{display:flex;align-items:flex-start;gap:11px}
+.cl-cb{width:22px;height:22px;border:2px solid var(--bd2);border-radius:6px;flex-shrink:0;cursor:pointer;background:#fff;display:flex;align-items:center;justify-content:center;transition:all 0.15s;font-size:14px;color:transparent}
+.cl-cb:hover:not(.disabled){border-color:var(--blue)}
+.cl-cb.on{background:#22c55e;border-color:#22c55e;color:#fff}
+.cl-cb.disabled{cursor:not-allowed;background:var(--sf3)}
+.cl-lbl{flex:1;font-size:13px;font-weight:500;color:var(--tx);line-height:1.4}
+.cl-audit{font-size:10px;color:#0f6e3e;font-weight:600;margin-top:5px;display:flex;align-items:center;gap:5px}
+.cl-audit .lock{color:var(--red);font-weight:700}
+.cl-actions{display:flex;align-items:center;gap:8px;margin-top:9px;flex-wrap:wrap}
+.cl-mini-btn{font-size:11px;font-weight:600;padding:5px 11px;border-radius:8px;border:1px solid var(--bd);background:#fff;color:var(--tx2);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all 0.15s}
+.cl-mini-btn:hover:not(:disabled){border-color:var(--blue);color:var(--blue)}
+.cl-mini-btn:disabled{opacity:0.5;cursor:not-allowed}
+.cl-mini-btn.has{background:#dcfff1;border-color:#b3f5d9;color:#0f6e3e}
+.cl-att-hint{font-size:10px;color:var(--tx3);font-weight:500}
+
+.cl-recon{background:#fff8e1;border:1px solid #ffe082;border-radius:12px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:11px}
+.cl-recon label{font-size:11px;font-weight:800;color:#8a6d1c;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap}
+.cl-recon input{background:#fff;border:1px solid #f0d67a;border-radius:8px;padding:7px 12px;font-family:inherit;font-size:13px;font-weight:600;color:var(--tx);width:110px;outline:none}
+.cl-recon input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--bluglow)}
+.cl-recon .hint{font-size:11px;color:var(--tx2)}
+
+.cl-advance-row{display:flex;align-items:center;gap:10px;padding-top:12px;border-top:1px solid var(--bd);flex-wrap:wrap}
+.cl-btn-adv{background:var(--blue);color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:7px;transition:all 0.2s}
+.cl-btn-adv:hover:not(:disabled){background:var(--bludk);transform:translateY(-1px)}
+.cl-btn-adv:disabled{opacity:0.45;cursor:not-allowed}
+.cl-btn-rej{background:#ffeceb;color:var(--red);border:1px solid #ffd5d2;border-radius:10px;padding:10px 15px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.cl-btn-rej:hover{background:#ffd5d2}
+.cl-missing{font-size:11px;color:var(--red);font-weight:600;margin-left:auto}
+.cl-rej-box{background:#fff5f5;border:1px solid #ffcccc;border-radius:10px;padding:11px 13px;margin-top:11px;display:none}
+.cl-rej-box.show{display:block}
+.cl-rej-box textarea{width:100%;background:#fff;border:1px solid var(--bd);border-radius:8px;padding:8px 12px;font-family:inherit;font-size:13px;min-height:60px;resize:vertical;outline:none;margin-bottom:8px}
+.cl-rej-box textarea:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(255,59,48,0.1)}
+.cl-rej-actions{display:flex;gap:7px}
+.cl-empty{color:var(--tx3);font-size:12px;padding:6px 0}
+.cl-none-selected{background:var(--sf2);border:1px dashed var(--bd);color:var(--tx3);font-size:12px;padding:14px;text-align:center;border-radius:10px}
 </style>
 </head>
 <body>
@@ -243,6 +303,44 @@ a.headlink:hover{background:rgba(255,255,255,0.15);opacity:1}
   </div>
 </div>
 
+<!-- v6: STAGE CHECKLIST PANEL -->
+<div class="cl-panel" id="clPanel">
+  <div class="cl-hd">
+    <div class="cl-title">
+      <span id="clStgIcon">&#128269;</span>
+      <span id="clStgTitle">Verification Checklist</span>
+      <span class="stg-pill" id="clStgPill">SELF-VERIFY</span>
+    </div>
+    <div class="cl-ctx"><span class="tk-tid" id="clTid">—</span><span id="clTtl">—</span></div>
+  </div>
+  <div class="cl-me">
+    <label>My identity:</label>
+    <select id="clMeSel"><option value="">— Choose team member —</option></select>
+    <span id="clMeEmail" style="font-size:11px;color:var(--tx3);font-family:monospace"></span>
+  </div>
+  <div class="cl-lock" id="clLock">Select your identity to begin ticking</div>
+  <div class="cl-progress"><div class="cl-progress-fill" id="clProgFill" style="width:0%"></div></div>
+  <div class="cl-list" id="clList"></div>
+  <div class="cl-recon" id="clReconRow" style="display:none">
+    <label>Reconciliation diff %</label>
+    <input type="text" id="clReconInput" placeholder="e.g. 0.3">
+    <span class="hint">Required for Self-Verify · e.g. 0.3 means 0.3% off from trusted source</span>
+  </div>
+  <div class="cl-advance-row">
+    <button class="cl-btn-adv" id="clBtnAdv" disabled>&#10141; Advance to next stage</button>
+    <button class="cl-btn-rej" id="clBtnRej" style="display:none">&#10005; Reject &amp; send back</button>
+    <span class="cl-missing" id="clMissing"></span>
+  </div>
+  <div class="cl-rej-box" id="clRejBox">
+    <label style="font-size:11px;color:var(--red);font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block">Rejection reason (required)</label>
+    <textarea id="clRejReason" placeholder="Explain what needs to change before this can pass peer review..."></textarea>
+    <div class="cl-rej-actions">
+      <button class="cl-btn-rej" id="clRejConfirm">Confirm rejection</button>
+      <button class="cl-mini-btn" id="clRejCancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <!-- STATS -->
 <div class="stats" id="stats"></div>
 
@@ -281,18 +379,47 @@ const API_URL = 'https://script.google.com/a/macros/hotelogix.com/s/AKfycbwzr21P
 const TEAM_TOKEN = 'supersetops9899';
 
 const TEAM = [
-  {name:'Nihal',    initials:'NI', color:'#3b82f6'},
-  {name:'Abhishek', initials:'AB', color:'#f472b6'},
-  {name:'Harikewal',initials:'HK', color:'#34d399'},
-  {name:'Avi',      initials:'AV', color:'#fbbf24'},
+  {name:'Nihal',    initials:'NI', color:'#3b82f6', email:'nihal.singh@hotelogix.com'},
+  {name:'Abhishek', initials:'AB', color:'#f472b6', email:'abhishek.sharma@hotelogix.com'},
+  {name:'Harikewal',initials:'HK', color:'#34d399', email:'harikewal.kushwaha@hotelogix.com'},
+  {name:'Avi',      initials:'AV', color:'#fbbf24', email:'avi.verma@hotelogix.com'},
+  {name:'Dinesh',   initials:'DI', color:'#a78bfa', email:'dinesh.singh@hotelogix.com'},
 ];
+
+// v6 pipeline definition — mirrors Code.gs (kept in sync manually)
+const PIPELINE_STAGES = ['intake','discovery','build','self_verify','peer_verify','uat','live'];
+const STAGE_LABELS = {
+  intake:'Intake', discovery:'Discovery', build:'Build',
+  self_verify:'Self-Verify', peer_verify:'Peer-Verify', uat:'UAT', live:'Live'
+};
+const STAGE_CHECKS_DEF = {
+  self_verify: [
+    {key:'row_count',   label:'Row count matches source table for a known period'},
+    {key:'reconcile',   label:'Total reconciled with existing trusted report'},
+    {key:'filters',     label:'All filters tested (date, hotel, category, etc.)'},
+    {key:'edge_cases',  label:'Edge cases handled (NULLs, zero-booking hotels, cancelled bookings)'},
+    {key:'timezone',    label:'Timezone applied consistently'},
+    {key:'historical',  label:'Historical spot-check matches known past number'},
+    {key:'performance', label:'Query runs in acceptable time'},
+  ],
+  peer_verify: [
+    {key:'sql_logic',     label:'SQL logic reviewed — joins and grouping correct'},
+    {key:'spot_check',    label:'Spot-checked at least 3 rows against raw table'},
+    {key:'filter_combos', label:'Filter combinations tested independently'},
+    {key:'performance',   label:'Query performance acceptable'},
+    {key:'documentation', label:'Documentation & naming follow standard'},
+  ],
+};
 
 // State
 let tickets = [];
+let stageChecks = [];
 let selectedTicket = null;
 let filterMode = 'all';
 let myName = localStorage.getItem('hlx_myname') || '';
+let myEmail = localStorage.getItem('hlx_myemail') || '';
 let uploadQueue = [];
+let pendingCheckAttach = null; // {stage, checkKey} while awaiting file for a specific check
 
 // ==================================================================
 // API
@@ -334,8 +461,14 @@ async function loadTickets(retry){
   try{
     const d=await apiFetch({action:'getAll'});
     tickets=d.tickets||[];
+    stageChecks=d.stageChecks||[];
     renderStats();
     render();
+    // If a ticket is selected, refresh its checklist state too
+    if(selectedTicket){
+      const fresh=tickets.find(t=>t.id===selectedTicket.id);
+      if(fresh){selectedTicket=fresh;renderChecklist();}
+    }
   }catch(e){
     if(!retry){setTimeout(()=>loadTickets(true),2000);return;}
     toast('&#9888; '+e.message,4000);
@@ -399,12 +532,14 @@ function selectTicket(id){
     +'<div class="tk-av" style="background:'+av.color+'">'+av.initials+'</div>'
     +'<button class="clear" onclick="clearSelectedTicket()">&#x2715;</button></div>';
   document.getElementById('upZone').classList.remove('disabled');
+  renderChecklist();
 }
 
 function clearSelectedTicket(){
   selectedTicket=null;
   document.getElementById('tkSelected').innerHTML='';
   document.getElementById('upZone').classList.add('disabled');
+  document.getElementById('clPanel').classList.remove('show');
 }
 
 // ==================================================================
@@ -623,7 +758,8 @@ async function handleFiles(files){
         payload=await readAsBase64(f);
       }
       updateQueueItem(qid,'up','<span class="spin"></span> Uploading '+fmtSize(payload.size)+'...');
-      await apiUpload({
+      // v6: if a checklist item is awaiting a proof file, attach the stage+checkKey
+      const uploadParams={
         action:'uploadAttachment',
         id:ticketId,
         fileData:payload.b64,
@@ -632,7 +768,12 @@ async function handleFiles(files){
         fileSize:payload.size||f.size,
         uploader,
         desc
-      });
+      };
+      if(pendingCheckAttach){
+        uploadParams.stage=pendingCheckAttach.stage;
+        uploadParams.checkKey=pendingCheckAttach.checkKey;
+      }
+      await apiUpload(uploadParams);
       updateQueueItem(qid,'ok','Uploaded &#10003;');
       needsReload=true;
     }catch(e){
@@ -643,6 +784,8 @@ async function handleFiles(files){
   // POST responses can't be read cross-origin, so pull fresh data from the sheet
   if(needsReload){
     if(descEl) descEl.value='';
+    // Clear the pending check-attachment target after this batch
+    if(pendingCheckAttach) pendingCheckAttach=null;
     toast('&#10003; Uploaded — refreshing gallery...');
     setTimeout(()=>loadTickets(true), 1200);
   }
@@ -839,8 +982,253 @@ document.addEventListener('keydown',(e)=>{
 });
 
 // ==================================================================
+// v6: STAGE CHECKLIST (Stages 4 & 5)
+// ==================================================================
+function tmByEmail(email){return TEAM.find(m=>m.email===String(email).toLowerCase());}
+
+function populateMeSelect(){
+  const sel=document.getElementById('clMeSel');
+  sel.innerHTML='<option value="">— Choose team member —</option>'+
+    TEAM.map(m=>'<option value="'+m.email+'"'+(myEmail===m.email?' selected':'')+'>'+m.name+'</option>').join('');
+  document.getElementById('clMeEmail').textContent=myEmail?myEmail:'';
+}
+
+function onMeChange(){
+  const sel=document.getElementById('clMeSel');
+  myEmail=sel.value;
+  const m=tmByEmail(myEmail);
+  if(m){myName=m.name;localStorage.setItem('hlx_myname',myName);}
+  localStorage.setItem('hlx_myemail',myEmail);
+  document.getElementById('clMeEmail').textContent=myEmail;
+  renderChecklist();
+}
+
+function renderChecklist(){
+  const panel=document.getElementById('clPanel');
+  if(!selectedTicket){panel.classList.remove('show');return;}
+  const t=selectedTicket;
+  const stage=t.pipelineStage||'legacy';
+
+  // Only show for stages 4 (self_verify) or 5 (peer_verify)
+  if(stage!=='self_verify' && stage!=='peer_verify'){
+    panel.classList.remove('show');
+    return;
+  }
+  panel.classList.add('show');
+
+  populateMeSelect();
+  document.getElementById('clTid').textContent=t.id;
+  document.getElementById('clTtl').textContent=t.title||'';
+
+  const isSV=stage==='self_verify';
+  const stgLbl=isSV?'SELF-VERIFY':'PEER-VERIFY';
+  const stgIcon=isSV?'&#128269;':'&#128100;';
+  document.getElementById('clStgTitle').textContent=isSV?'Self-Verification (Stage 4)':'Peer Review (Stage 5)';
+  document.getElementById('clStgIcon').innerHTML=stgIcon;
+  const pill=document.getElementById('clStgPill');
+  pill.textContent=stgLbl;
+  pill.className='stg-pill'+(isSV?'':' peer');
+
+  // Determine who is allowed to tick
+  const allowedName = isSV ? t.assignee : t.reviewer;
+  const me = tmByEmail(myEmail);
+  const canTick = !!me && me.name===allowedName;
+  const lockEl=document.getElementById('clLock');
+  if(!myEmail){
+    lockEl.className='cl-lock';
+    lockEl.innerHTML='&#9888; Select your identity above to begin ticking';
+  }else if(canTick){
+    lockEl.className='cl-lock unlocked';
+    lockEl.innerHTML='&#128275; You are '+allowedName+' — you can tick these checks';
+  }else{
+    lockEl.className='cl-lock locked';
+    lockEl.innerHTML='&#128274; Read-only for you — only <b style="margin:0 4px">'+allowedName+'</b> ('+(isSV?'assigned owner':'named peer reviewer')+') can tick these';
+  }
+
+  // Build the list
+  const defs=STAGE_CHECKS_DEF[stage]||[];
+  const currentChecks=stageChecks.filter(c=>c.ticketId===t.id && c.stage===stage);
+  const tickedByKey={};
+  currentChecks.forEach(c=>{if(c.ticked)tickedByKey[c.checkKey]=c;});
+  const attByKey={};
+  currentChecks.forEach(c=>{if(c.attachmentDriveId)attByKey[c.checkKey]=c.attachmentDriveId;});
+
+  const listHtml=defs.map(def=>{
+    const ticked=!!tickedByKey[def.key];
+    const audit=ticked?'<div class="cl-audit">&#10003; '+(tmByEmail(tickedByKey[def.key].tickedBy)||{name:tickedByKey[def.key].tickedBy}).name+' &middot; '+fmtStamp(tickedByKey[def.key].tickedAt)+'</div>':'';
+    const attId=attByKey[def.key]||'';
+    const attBtnCls='cl-mini-btn'+(attId?' has':'');
+    const attBtnTxt=attId?'&#128206; File attached':'&#128206; Attach proof';
+    const rowCls='cl-row'+(ticked?' ticked':'')+(canTick?'':' locked');
+    return '<div class="'+rowCls+'" data-key="'+def.key+'">'
+      +'<div class="cl-row-top">'
+      +'<div class="cl-cb'+(ticked?' on':'')+(canTick?'':' disabled')+'" data-tick="'+def.key+'">'+(ticked?'&#10003;':'')+'</div>'
+      +'<div class="cl-lbl">'+def.label+audit+'</div>'
+      +'</div>'
+      +'<div class="cl-actions">'
+      +'<button class="'+attBtnCls+'" data-attach="'+def.key+'"'+(canTick?'':' disabled')+'>'+attBtnTxt+'</button>'
+      +(attId?'<a class="cl-mini-btn" href="https://drive.google.com/file/d/'+attId+'/view" target="_blank" rel="noopener">&#128065; View</a>':'')
+      +'<span class="cl-att-hint">Optional · screenshot or CSV proof</span>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+  document.getElementById('clList').innerHTML=listHtml||'<div class="cl-empty">No checks defined for this stage.</div>';
+
+  // Wire up tick/attach handlers
+  document.querySelectorAll('#clList [data-tick]').forEach(el=>{
+    el.addEventListener('click',function(){
+      if(!canTick){toast('&#128274; Only '+allowedName+' can tick these');return;}
+      const key=this.dataset.tick;
+      const isTicked=this.classList.contains('on');
+      if(isTicked) untickTheCheck(key); else tickTheCheck(key);
+    });
+  });
+  document.querySelectorAll('#clList [data-attach]').forEach(el=>{
+    el.addEventListener('click',function(){
+      if(!canTick){toast('&#128274; Only '+allowedName+' can attach proof');return;}
+      const key=this.dataset.attach;
+      pendingCheckAttach={stage:stage, checkKey:key};
+      toast('&#128206; Use the upload area above — file will link to this check');
+      // Focus the upload area
+      document.getElementById('upZone').scrollIntoView({behavior:'smooth',block:'center'});
+      // Auto-fill description with check label
+      const def=defs.find(d=>d.key===key);
+      if(def) document.getElementById('upDesc').value='['+STAGE_LABELS[stage]+'] '+def.label;
+    });
+  });
+
+  // Reconciliation diff — only for self_verify
+  const reconRow=document.getElementById('clReconRow');
+  if(isSV){
+    reconRow.style.display='';
+    const sd=(t.stageData&&t.stageData.self_verify)||{};
+    const reconInput=document.getElementById('clReconInput');
+    reconInput.value=(sd.reconDiffPct!==undefined&&sd.reconDiffPct!==null)?sd.reconDiffPct:'';
+    reconInput.disabled=!canTick;
+    reconInput.onchange=async function(){
+      if(!canTick)return;
+      try{
+        await apiFetch({action:'updateStageData',id:t.id,stage:'self_verify',dataJson:JSON.stringify({reconDiffPct:reconInput.value})});
+        toast('&#10003; Reconciliation diff saved');
+        loadTickets(true);
+      }catch(e){toast('&#10007; '+e.message,4000);}
+    };
+  }else{
+    reconRow.style.display='none';
+  }
+
+  // Progress
+  const totalReq=defs.length+(isSV?1:0);
+  let done=defs.filter(d=>tickedByKey[d.key]).length;
+  if(isSV){
+    const sd=(t.stageData&&t.stageData.self_verify)||{};
+    if(sd.reconDiffPct!==undefined && sd.reconDiffPct!==null && String(sd.reconDiffPct).trim()!=='') done++;
+  }
+  const pct=totalReq?Math.round(done/totalReq*100):0;
+  document.getElementById('clProgFill').style.width=pct+'%';
+
+  // Advance / Reject
+  const advBtn=document.getElementById('clBtnAdv');
+  const rejBtn=document.getElementById('clBtnRej');
+  const missingEl=document.getElementById('clMissing');
+  const missing=[];
+  defs.forEach(d=>{if(!tickedByKey[d.key])missing.push(d.label);});
+  if(isSV){
+    const sd=(t.stageData&&t.stageData.self_verify)||{};
+    if(!sd.reconDiffPct && sd.reconDiffPct!==0) missing.push('Reconciliation diff %');
+  }
+  if(missing.length){
+    advBtn.disabled=true;
+    advBtn.title='Missing: '+missing.slice(0,3).join(', ')+(missing.length>3?' + '+(missing.length-3)+' more':'');
+    missingEl.textContent=missing.length+' check(s) pending';
+  }else{
+    advBtn.disabled=!canTick;
+    advBtn.title=canTick?'All checks complete — click to advance':'Only '+allowedName+' can advance';
+    missingEl.textContent='';
+  }
+  advBtn.textContent=isSV?'\u27A1 Advance to Peer-Verify':'\u27A1 Approve & advance to UAT';
+  advBtn.onclick=advanceStage;
+
+  // Reject only visible at peer_verify
+  if(!isSV){
+    rejBtn.style.display='';
+    rejBtn.disabled=!canTick;
+    rejBtn.onclick=function(){document.getElementById('clRejBox').classList.add('show');};
+  }else{
+    rejBtn.style.display='none';
+  }
+  document.getElementById('clRejCancel').onclick=function(){document.getElementById('clRejBox').classList.remove('show');};
+  document.getElementById('clRejConfirm').onclick=rejectPeerReview;
+}
+
+async function tickTheCheck(checkKey){
+  if(!myEmail){toast('&#9888; Choose your identity first');return;}
+  const t=selectedTicket;const stage=t.pipelineStage;
+  try{
+    ss('syncing');
+    const r=await apiFetch({action:'tickCheck',id:t.id,stage,checkKey,sessionEmail:myEmail});
+    toast('&#10003; Ticked');
+    // Optimistic update
+    const now=fmtStamp(new Date().toLocaleString('en-IN'));
+    const idx=stageChecks.findIndex(c=>c.ticketId===t.id&&c.stage===stage&&c.checkKey===checkKey);
+    const rec={ticketId:t.id,stage,checkKey,ticked:true,tickedBy:myEmail,tickedAt:(r&&r.check&&r.check.tickedAt)||now,attachmentDriveId:(idx>=0?stageChecks[idx].attachmentDriveId:'')};
+    if(idx>=0) stageChecks[idx]=rec; else stageChecks.push(rec);
+    renderChecklist();
+    // Server-authoritative refresh
+    setTimeout(()=>loadTickets(true),400);
+  }catch(e){ss('error');toast('&#10007; '+e.message,4500);}
+}
+
+async function untickTheCheck(checkKey){
+  const t=selectedTicket;const stage=t.pipelineStage;
+  try{
+    await apiFetch({action:'untickCheck',id:t.id,stage,checkKey,sessionEmail:myEmail});
+    const idx=stageChecks.findIndex(c=>c.ticketId===t.id&&c.stage===stage&&c.checkKey===checkKey);
+    if(idx>=0){stageChecks[idx].ticked=false;stageChecks[idx].tickedBy='';stageChecks[idx].tickedAt='';}
+    renderChecklist();
+    setTimeout(()=>loadTickets(true),400);
+  }catch(e){ss('error');toast('&#10007; '+e.message,4500);}
+}
+
+async function advanceStage(){
+  const t=selectedTicket;
+  if(!confirm('Advance '+t.id+' to the next stage? This cannot be undone from here (managers can move back via Sheet).')) return;
+  try{
+    ss('syncing');
+    let extra={};
+    // If moving TO live, ask for production URL
+    if(t.pipelineStage==='uat'){
+      const url=prompt('Production dashboard URL:','');
+      if(!url){toast('&#9888; Production URL required for LIVE');ss('ok');return;}
+      extra.productionUrl=url;
+    }
+    await apiFetch(Object.assign({action:'advanceStage',id:t.id,sessionEmail:myEmail},extra));
+    toast('&#10003; Advanced');
+    setTimeout(()=>loadTickets(true),400);
+  }catch(e){ss('error');toast('&#10007; '+(e.message||'Advance failed'),5000);}
+}
+
+async function rejectPeerReview(){
+  const reason=document.getElementById('clRejReason').value.trim();
+  if(!reason){toast('&#9888; Rejection reason is required');return;}
+  const t=selectedTicket;
+  if(!confirm('Reject '+t.id+'? This returns it to Build and clears Stage 4 & 5 ticks.')) return;
+  try{
+    ss('syncing');
+    await apiFetch({action:'rejectPeer',id:t.id,reason,sessionEmail:myEmail});
+    toast('&#10005; Rejected — returned to Build');
+    document.getElementById('clRejBox').classList.remove('show');
+    document.getElementById('clRejReason').value='';
+    setTimeout(()=>loadTickets(true),400);
+  }catch(e){ss('error');toast('&#10007; '+e.message,5000);}
+}
+
+document.getElementById('clMeSel').addEventListener('change',onMeChange);
+
+// ==================================================================
 // INIT
 // ==================================================================
+populateMeSelect();
 loadTickets();
 setInterval(()=>loadTickets(true),90000);
 </script>
