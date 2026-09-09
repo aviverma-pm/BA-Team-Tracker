@@ -917,6 +917,19 @@ function nextStage(s){const i=PIPELINE_STAGES.indexOf(s);return (i>=0&&i<PIPELIN
 function isPipelineTicket(t){return t.pipelineStage && t.pipelineStage!=='legacy';}
 function nameForEmail(email){for(const n in TEAM_EMAILS_MAP)if(TEAM_EMAILS_MAP[n]===email)return n;return '';}
 
+// Normalize a date value to YYYY-MM-DD — handles ISO strings returned from Sheet
+function fmtDate(v){
+  if(!v) return '';
+  const s=String(v);
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  // ISO string like "2026-09-09T18:30:00.000Z" — just take the date part
+  const m=s.match(/^(\d{4}-\d{2}-\d{2})/);
+  if(m) return m[1];
+  const d=new Date(s);
+  if(!isNaN(d)) return d.toISOString().slice(0,10);
+  return s;
+}
+
 // Compute what's missing for a ticket to advance from its current stage
 function computeStageMissing(t){
   const st=t.pipelineStage; const missing=[]; const sd=t.stageData||{};
@@ -983,7 +996,9 @@ function ss(state){
 function apiFetch(params){
   ss('syncing');
   // Auto-inject token for all write actions
-  const writeActions=['create','update','comment','deleteTicket','updateConfig','saveDailyLog'];
+  const writeActions=['create','update','comment','deleteTicket','updateConfig','saveDailyLog',
+    'uploadAttachment','deleteAttachment',
+    'advanceStage','rejectPeer','tickCheck','untickCheck','updateStageData'];
   if(writeActions.includes(params.action)) params.token=TEAM_TOKEN;
   return new Promise((res,rej)=>{
     const cb='_cb'+Date.now()+'_'+Math.random().toString(36).slice(2);
@@ -1194,10 +1209,11 @@ function tCard(t){
   // Meta footer — deadline + comments
   const metaParts=[];
   if(t.deadline){
-    const dl=new Date(t.deadline);
+    const dlStr=fmtDate(t.deadline);
+    const dl=new Date(dlStr);
     const now=new Date();
     const overdue=!isD && !isNaN(dl) && dl < new Date(now.toDateString());
-    metaParts.push('<span style="color:'+(overdue?'var(--red)':'var(--tx3)')+'" title="Deadline '+t.deadline+'">📅 '+t.deadline.slice(5)+'</span>');
+    metaParts.push('<span style="color:'+(overdue?'var(--red)':'var(--tx3)')+'" title="Deadline '+dlStr+'">📅 '+dlStr.slice(5)+'</span>');
   }
   if(Array.isArray(t.comments)&&t.comments.length){
     metaParts.push('<span>💬 '+t.comments.length+'</span>');
@@ -1405,7 +1421,7 @@ function openDetail(id){
     +(isPipe?'<div class="di"><div class="dl">Peer Reviewer</div><div class="dv">'+(t.reviewer||'—')+'</div></div>':'')
     +'<div class="di"><div class="dl">Pipeline Stage</div><div class="dv" style="color:'+pColor+';font-weight:700">'+STAGE_LABELS[pStage]+(isPipe?' <span style="font-size:10px;color:var(--tx3);font-weight:500">('+(pIdx+1)+'/7)</span>':'')+'</div></div>'
     +(isPipe?'<div class="di"><div class="dl">Requester</div><div class="dv">'+(t.requester||'—')+'</div></div>':'')
-    +(isPipe && t.deadline?'<div class="di"><div class="dl">Deadline</div><div class="dv">'+t.deadline+'</div></div>':'')
+    +(isPipe && t.deadline?'<div class="di"><div class="dl">Deadline</div><div class="dv">'+fmtDate(t.deadline)+'</div></div>':'')
     +'<div class="di"><div class="dl">Created</div><div class="dv">'+t.created+'</div></div>'
     +(isD?'<div class="di"><div class="dl">Completed</div><div class="dv">'+(t.doneAt||t.updatedAt||'&#8212;')+'</div></div><div class="di"><div class="dl">Turnaround (TAT)</div><div class="dv" style="color:#1a9c5b;font-weight:700">'+tatLabel(t)+'</div></div>':'')
     +jiraB+rtB+'</div>'
@@ -1499,7 +1515,7 @@ function buildStageBody(t,sid,sd,isCurrent){
     body+=field('Assigned Owner',t.assignee);
     body+=field('Peer Reviewer',t.reviewer);
     body+=field('Priority',t.priority);
-    body+=field('Deadline',t.deadline);
+    body+=field('Deadline',fmtDate(t.deadline));
     body+=field('Business Goal',t.businessGoal);
     body+='<div class="pl-hint">To edit these, use the &#9998; Edit button at the top.</div>';
   }else if(sid==='discovery'){
@@ -1732,7 +1748,7 @@ function openEditModal(id){
   // v6: intake fields
   document.getElementById('efrequester').innerHTML='<option value="">— Select —</option>'+cfg.team.map(m=>'<option'+(m.name===t.requester?' selected':'')+'>'+m.name+'</option>').join('')+'<option value="External"'+(t.requester==='External'?' selected':'')+'>External</option>';
   document.getElementById('efreviewer').innerHTML='<option value="">— Select —</option>'+cfg.team.filter(m=>m.name!==t.assignee).map(m=>'<option'+(m.name===t.reviewer?' selected':'')+'>'+m.name+'</option>').join('');
-  document.getElementById('efdeadline').value=t.deadline||'';
+  document.getElementById('efdeadline').value=fmtDate(t.deadline);
   document.getElementById('efbizgoal').value=t.businessGoal||'';
   openOv('ovEdit');
 }
