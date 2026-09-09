@@ -432,7 +432,8 @@ function ss(state){
 
 function apiFetch(params){
   ss('syncing');
-  const writeActions=['create','update','comment','deleteTicket','updateConfig','uploadAttachment','deleteAttachment'];
+  const writeActions=['create','update','comment','deleteTicket','updateConfig','uploadAttachment','deleteAttachment',
+    'advanceStage','rejectPeer','tickCheck','untickCheck','updateStageData'];
   if(writeActions.includes(params.action)) params.token=TEAM_TOKEN;
   return new Promise((res,rej)=>{
     const cb='_cb'+Date.now()+'_'+Math.random().toString(36).slice(2);
